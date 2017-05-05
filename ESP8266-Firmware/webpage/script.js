@@ -6,6 +6,7 @@ function Karadio()
 {
     //PRIVATE PROPERTIES:
     const
+        debug           = true,
         karadio         = "Karadio",
         content         = "Content-type",
         ctype           = "application/x-www-form-urlencoded",
@@ -17,15 +18,12 @@ function Karadio()
         yoursURL        = "http://test.giltesa.com/karadio/php/yours/index.php";    // http://karadio.karawin.fr/yours/index.php
 
     var
-        karadioURL      = "192.168.1.8",
-      //karadioURL      = window.location.host,
+        karadioURL      = window.location.host,
+        karadioDebugURL = "192.168.1.8",
         webSocket, ex;
 
 
-
-    var auto, intervalid, timeID,
-        urlmonitor, playing = false,
-        curtab = "tab-home", stchanged = false;
+    var intervalid, timeID, stchanged = false; //playing = false,
 
 
 
@@ -38,7 +36,7 @@ function Karadio()
     this.begin = function()
     {
         loadVersionPage();
-/*
+
         if( intervalid != 0 )
             window.clearTimeout(intervalid);
         intervalid = 0;
@@ -47,21 +45,20 @@ function Karadio()
             window.clearInterval(timeID);
         timeID = window.setInterval(dTime, 1000);
 
-        loadStationsList(maxStation);
+        loadStationsList();
         checkWebSocket();
         refresh();
         wifi(0);
         autoStart();
         promptWorking("");
-*/
     };
 
 
 
     this.openWebSocket = function()
     {
-        webSocket = new webSocket("ws://"+ karadioURL +"/");
-        console.log("url:ws://"+ karadioURL +"/");
+        webSocket = new WebSocket("ws://"+ (!debug ? karadioURL : karadioDebugURL) +"/");
+        console.log("url:ws://"+ (!debug ? karadioURL : karadioDebugURL) +"/");
 
         webSocket.onmessage = function(event)
         {
@@ -87,7 +84,6 @@ function Karadio()
 
                 if( arr["monitor"] )
                     mPlay(arr["monitor"]);
-                  //playMonitor(arr["monitor"]);
 
                 if( arr["wsstation"] )
                     wsPlayStation(arr["wsstation"]);
@@ -100,7 +96,7 @@ function Karadio()
 
         webSocket.onopen = function(event)
         {
-            console.log("Open, url:" + "ws://"+ karadioURL +"/");
+            console.log("Open, url:" + "ws://"+ karadioDebugURL +"/");
             //console.log("onopen webSocket: "+webSocket);
 
             if (window.timerID)
@@ -138,48 +134,25 @@ function Karadio()
 
 
 
-    /*this.playMonitor = function(url)
-    {
-        var monitor = $("#monitor")[0];
-
-        if( !monitor.paused )
-        {
-            $monitor.src = url.endsWith("/") ? url+";" : url;
-            $monitor.play();
-        }
-    }*/
-
-
-
     this.mPlay = function(url)
     {
-        var monitor = $("#monitor")[0];
+        var monitor = $("#monitor")[0], arr;
 
         if( url == null )
         {
-            //var id = parseInt(localStorage.getItem('selindexstore'))
-
-            url = "http://ais.rtl.fr:80/rtl-1-44-128"; //"REVISAR: Sacar URL de la selecionada en el desplegable (que solo contiene el ID...)
+            arr = JSON.parse( localStorage.getItem( localStorage.getItem('selindexstore') ) );
+            url = "http://"+ arr["URL"] +":"+ arr["Port"] + arr["File"];
         }
 
-        if( !monitor.paused )
+        if( monitor.paused )
         {
             monitor.src    = url.endsWith("/") ? url + ";" : url;
             monitor.volume = getRange("#volm_range").get() / 100;
 
-            while( monitor.networkState == 2 );
+            //while( monitor.networkState == 2 ); //KARAWIN: What is this infinite loop for? It never stops!
 
             monitor.play();
-
         }
-    };
-
-
-
-    this.mError = function()
-    {
-        var monitor = $("#monitor")[0];
-        console.log("monitor error1 " + monitor.error.code);
     };
 
 
@@ -191,28 +164,32 @@ function Karadio()
         if( !monitor.paused )
         {
             monitor.src = "http://karadio.karawin.fr/silence-1sec.mp3";
-            monitor.stop();
-        }
-    };
-
-
-
-    this.mPause = function()
-    {
-        var monitor = $("#monitor")[0];
-
-        if( !monitor.paused )
-        {
             monitor.pause();
         }
     };
 
 
 
+    mPause = function()
+    {
+        var monitor = $("#monitor")[0];
+
+        if( !monitor.paused )
+            monitor.pause();
+    };
+
+
+
+    this.mError = function()
+    {
+        console.log("monitor error1 " + $("#monitor")[0].error.code);
+    };
+
+
+
     this.mVol = function($val)
     {
-        var monitor    = $("#monitor")[0];
-        monitor.volume = $val;
+        $("#monitor")[0].volume = $val;
     };
 
 
@@ -231,7 +208,7 @@ function Karadio()
     //THE COLOR VALIDATION IS NOW CHECKED BY BOOTSTRAP, THAT CAN BE DELETED: REVISAR
     this.checkIP = function($selector)
     {
-        $this.style.color = /^([0-9]+\.){3}[0-9]+$/.test($selector.val()) ? "green" : "red";
+        //$this.style.color = /^([0-9]+\.){3}[0-9]+$/.test($selector.val()) ? "green" : "red"; //REVISAR
         //$(element).closest('.form-group').addClass('has-error');
         // http://stackoverflow.com/questions/18754020/bootstrap-3-with-jquery-validation-plugin
     };
@@ -517,15 +494,15 @@ function Karadio()
             url = arr["url1"].replace(/\\/g, "").replace(/ /g, "");
 
             if( url == 'http://www.icecast.org/' ){
-                $("#icon").attr("src","/logo.png");
+                $("#icon").prop("src","/logo.png");
             }else{
-                $("#icon").attr("src","http://www.google.com/s2/favicons?domain_url=" + url);
+                $("#icon").prop("src","http://www.google.com/s2/favicons?domain_url=" + url);
             }
         };
 
         url = arr["url1"].replace(/\\/g, "");
         $('#url1').text(url);
-        $("#url2").attr("href", url);
+        $("#url2").prop("href", url);
 
         if( arr["meta"] == "" ){
             $('#meta').text(karadio);
@@ -563,6 +540,7 @@ function Karadio()
 
     this.refresh = function()
     {
+        /*
         xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function()
         {
@@ -581,13 +559,14 @@ function Karadio()
         try
         {
             webSocket.send("monitor");
-            xhr.open("POST", "icy", false);
+            xhr.open("POST", (!debug ? "icy" : "http://"+karadioDebugURL+"/icy"), false);
             xhr.setRequestHeader(content, cjson);
             xhr.send();
         }
         catch(ex){
             console.log("error" + ex);
         }
+        */
     };
 
 
@@ -755,7 +734,7 @@ function Karadio()
                 $('#ua').val(arr["ua"]);
             }
         }
-        xhr.open("POST", "wifi", false);
+        xhr.open("POST", (!debug ? "wifi" : "http://"+karadioDebugURL+"/wifi"), false);
         xhr.setRequestHeader(content, ctype);
         xhr.send(
             "valid="  + valid +
@@ -779,7 +758,7 @@ function Karadio()
         try
         {
             xhr = new XMLHttpRequest();
-            xhr.open("POST", "instant_play", false);
+            xhr.open("POST", (!debug ? "instant_play" : "http://"+karadioDebugURL+"/instant_play"), false);
             xhr.setRequestHeader(content, ctype);
             curl = $('#instant_path').val();
 
@@ -831,7 +810,7 @@ function Karadio()
     {
         try
         {
-            xhr.open("POST", "auto", false);
+            xhr.open("POST", (!debug ? "auto" : "http://"+karadioDebugURL+"/auto"), false);
             xhr.setRequestHeader(content, ctype);
             xhr.send("id=" + $('#aplay').is(":checked") + "&"); //document.getElementById('aplay').checked //REVISAR
         }
@@ -855,7 +834,7 @@ function Karadio()
         }
         try
         {
-            xhr.open("POST", "rauto", false); // request auto state
+            xhr.open("POST", (!debug ? "rauto" : "http://"+karadioDebugURL+"/rauto"), false); // request auto state
             xhr.setRequestHeader(content, ctype);
             xhr.send("&");
         }
@@ -876,19 +855,19 @@ function Karadio()
 
     this.playStation = function()
     {
-        var select, id;
+        var $select, id;
         try
         {
             //checkWebSocket();
             mPause();
 
-            var $select = $("#stationsSelect");
-            var id      = $select.find(":selected").val();
+            $select = $("#stationsSelect");
+            id      = $select.find(":selected").val();
 
             localStorage.setItem('selindexstore', id.toString());
 
             xhr = new XMLHttpRequest();
-            xhr.open("POST", "play", false);
+            xhr.open("POST", (!debug ? "play" : "http://"+karadioDebugURL+"/play"), false);
             xhr.setRequestHeader(content, ctype);
             xhr.send("id=" + id + "&");
         }
@@ -912,7 +891,7 @@ function Karadio()
         try
         {
             xhr = new XMLHttpRequest();
-            xhr.open("POST", "stop", false);
+            xhr.open("POST", (!debug ? "stop" : "http://"+karadioDebugURL+"/stop"), false);
             xhr.setRequestHeader(content, ctype);
             xhr.send();
         }
@@ -926,7 +905,7 @@ function Karadio()
     this.saveSoundSettings = function()
     {
         xhr = new XMLHttpRequest();
-        xhr.open("POST", "sound", false);
+        xhr.open("POST", (!debug ? "sound" : "http://"+karadioDebugURL+"/sound"), false);
         xhr.setRequestHeader(content, ctype);
         xhr.send(
             "&bass="         + getRange("#bass_range").get()
@@ -967,7 +946,7 @@ function Karadio()
         try
         {
             xhr = new XMLHttpRequest();
-            xhr.open("POST", "setStation", false);
+            xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
             xhr.setRequestHeader(content, ctype);
 
             xhr.send(
@@ -996,7 +975,7 @@ function Karadio()
 
         abortStation(); // to erase the edit field
         loadStations();
-        loadStationsList(maxStation);
+        loadStationsList();
     };
 
 
@@ -1058,7 +1037,7 @@ function Karadio()
                     cpedit(arr);
                 }
             }
-            xhr.open("POST", "getStation", false);
+            xhr.open("POST", (!debug ? "getStation" : "http://"+karadioDebugURL+"/getStation"), false);
             xhr.setRequestHeader(content, ctype);
             xhr.send("idgp=" + id + "&");
         }
@@ -1080,7 +1059,7 @@ function Karadio()
             stChanged();
 
         localStorage.clear();
-        loadStationsList(maxStation);
+        loadStationsList();
         loadStations();
 
         promptWorking("");
@@ -1096,7 +1075,7 @@ function Karadio()
         if( confirm("Warning: This will clear all stations.\n Be sure to save station before.\nClear now?") )
         {
             xhr = new XMLHttpRequest();
-            xhr.open("POST", "clear", false);
+            xhr.open("POST", (!debug ? "clear" : "http://"+karadioDebugURL+"/clear"), false);
             xhr.setRequestHeader(content, ctype);
             xhr.send();
             refreshList();
@@ -1217,7 +1196,7 @@ function Karadio()
                         arr = JSON.parse(lines[i]);
                         fillInfo(i, arr);
                     }
-                    xhr.open("POST", "setStation", false);
+                    xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
                     xhr.setRequestHeader(content, ctype);
                     console.log("post " + tosend);
                     xhr.send(tosend);
@@ -1239,7 +1218,7 @@ function Karadio()
                             arr = JSON.parse(lines[line + i]);
                             fillInfo(line + i, arr);
                         }
-                        xhr.open("POST", "setStation", false);
+                        xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
                         xhr.setRequestHeader(content, ctype);
                         xhr.send(tosend);
                     }
@@ -1247,7 +1226,7 @@ function Karadio()
                         console.log("error " + ex);
                     }
                 }
-                loadStationsList(maxStation);
+                loadStationsList();
             };
 
             file = $('#fileload').files[0];
@@ -1287,7 +1266,7 @@ function Karadio()
             pa1.rows[txt].cells[6].innerHTML = b.parentNode.rows[txt].cells[6].innerHTML;
         }
 
-        $("#stsave").attr("disabled", false);
+        $("#stsave").prop("disabled", false);
         stchanged = true;
     };
 
@@ -1348,7 +1327,7 @@ function Karadio()
                 for( i=0 ; i < indmax ; i++)
                     fillInfo(index + i);
 
-                xhr.open("POST", "setStation", false);
+                xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
                 xhr.setRequestHeader(content, ctype);
                 xhr.send(tosend);
             }
@@ -1367,7 +1346,7 @@ function Karadio()
                     for( i=0 ; i < indmax ; i++ )
                         fillInfo(index + i);
 
-                    xhr.open("POST", "setStation", false);
+                    xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
                     xhr.setRequestHeader(content, ctype);
                     xhr.send(tosend);
                 }
@@ -1375,10 +1354,10 @@ function Karadio()
                     console.log("error " + ex);
                 }
             }
-            loadStationsList(maxStation);
+            loadStationsList();
         }
 
-        $("#stsave").attr("disabled", true);
+        $("#stsave").prop("disabled", true);
         stchanged = false;
 
         promptWorking("");
@@ -1399,7 +1378,7 @@ function Karadio()
 
         function appendStation(id, arr)
         {
-            $trRows.append(
+            $trRows.push( //REVISAR
                 "<tr id='tr"+ id +"'>"
                     +"<td>"+  id +"</td>"
                     +"<td>"+                   getVal(arr["Name"]) +"</td>"
@@ -1444,7 +1423,7 @@ function Karadio()
                             appendStation(id, arr);
                         }
                     }
-                    xhr.open("POST", "getStation", false);
+                    xhr.open("POST", (!debug ? "getStation" : "http://"+karadioDebugURL+"/getStation"), false);
                     xhr.setRequestHeader(content, ctype);
                     xhr.send("idgp=" + id + "&");
                 }
@@ -1486,39 +1465,33 @@ function Karadio()
 
     this.loadStationsList = function()
     {
-        var $select, arr, foundNull = false;
+        var $select, $options=[], id=0;
 
         $select = $("#stationsSelect");
         $select.empty();
 
-        function cploadStationsList(id, arr)
-        {
-            foundNull = false;
-
-            if( arr["Name"].length == 0 )
-                foundNull = true;
-            else
-                $select.append( $('<option/>').attr({ 'value': id }).text(id + ": \t" + arr["Name"]) );
-
-            return foundNull;
-        }
-
-        $select.disabled = true;
         promptWorking("Working.. Please Wait");
 
-        for( var id=0 ; id < maxStation ; id++ )
+        function addStation(id, arr)
+        {
+            if( arr["Name"].length > 0 )
+                $options.push( $('<option/>').attr({ 'value': id }).text(id +": "+ arr["Name"]) );
+        }
+
+        while( id < maxStation )
         {
             idstr = id.toString();
 
             if( localStorage.getItem(idstr) != null )
             {
-                try{
-                    arr = JSON.parse(localStorage.getItem(idstr));
+                try
+                {
+                    addStation(id, JSON.parse(localStorage.getItem(idstr)) );
+                    id++;
                 }
                 catch(ex){
                     console.log("error" + ex);
                 }
-                foundNull = cploadStationsList(id, arr);
             }
             else
             {
@@ -1529,30 +1502,33 @@ function Karadio()
                     {
                         if( xhr.readyState == 4 && xhr.status == 200 )
                         {
-                            try{
-                                arr = JSON.parse(xhr.responseText);
+                            try
+                            {
+                                localStorage.setItem(idstr, xhr.responseText);
+                                addStation(id, JSON.parse(xhr.responseText) );
+                                id++;
                             }
                             catch(ex){
                                 console.log("error" + ex);
                             }
-                            localStorage.setItem(idstr, xhr.responseText);
-                            foundNull = cploadStationsList(id, arr);
                         }
                     }
-                    xhr.open("POST", "getStation", false);
+                    xhr.open("POST", (!debug ? "getStation" : "http://"+karadioDebugURL+"/getStation"), false);
                     xhr.setRequestHeader(content, ctype);
                     xhr.send("idgp=" + id + "&");
                 }
                 catch(ex){
                     console.log("error" + ex);
-                    id--;
+                    //id--; //CAN BE DELETED
                 }
             }
         }
 
         promptWorking("");
-        $select.disabled = false;
+
+        $select.append($options);
         $select.val( parseInt(localStorage.getItem('selindexstore')) );
+        $select.selectpicker('refresh');
     };
 
 

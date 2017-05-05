@@ -12,7 +12,6 @@
 
     <!-- Web App: Android Chrome -->
     <link rel="manifest" href="manifest.json">
-
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Karadio">
@@ -58,18 +57,10 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a id="home" href="#tab-home" aria-controls="tab-home" role="tab" data-toggle="tab" class="trn">Home</a>
-                    </li>
-                    <li>
-                        <a id="stations" href="#tab-stations" aria-controls="tab-stations" role="tab" data-toggle="tab" class="trn">Stations</a>
-                    </li>
-                    <li>
-                        <a id="settings" href="#tab-settings" aria-controls="tab-settings" role="tab" data-toggle="tab" class="trn">Settings</a>
-                    </li>
-                    <li>
-                        <a id="about" href="#tab-about" aria-controls="tab-about" role="tab" data-toggle="tab" class="trn">About</a>
-                    </li>
+                    <li class="active"><a id="home"     href="#tab-home"     aria-controls="tab-home"     role="tab" data-toggle="tab" class="trn">Home</a></li>
+                    <li>               <a id="stations" href="#tab-stations" aria-controls="tab-stations" role="tab" data-toggle="tab" class="trn">Stations</a></li>
+                    <li>               <a id="settings" href="#tab-settings" aria-controls="tab-settings" role="tab" data-toggle="tab" class="trn">Settings</a></li>
+                    <li>               <a id="about"    href="#tab-about"    aria-controls="tab-about"    role="tab" data-toggle="tab" class="trn">About</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
@@ -86,8 +77,6 @@
     </nav>
 
     <div class="container">
-
-        <!-- Main component for a primary marketing message or call to action -->
         <div id="tab-content" class="tab-content">
 
 
@@ -112,20 +101,7 @@
                                 <div class="form-group">
                                     <label for="stationsSelect" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Station:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <select id="stationsSelect" class="form-control selectpicker" onchange="karadio.Select()">
-                                            <!-- DELETE ALL OPTIONS -->
-                                            <!--
-                                            <option value="18">18: Rire et Chansons Sketches</option>
-                                            <option value="19">19: Rire et Chansons Live</option>
-                                            <option value="20">20: Virgin Radio</option>
-                                            <option value="21">21: Impact FM</option>
-                                            <option value="22">22: M2 80's</option>
-                                            <option value="23">23: M2 90's</option>
-                                            <option value="24">24: M2 Hit's</option>
-                                            <option value="25">25: M2 Club</option>
-                                            -->
-                                            <!-- END DELETE ALL OPTIONS -->
-                                        </select>
+                                        <select id="stationsSelect" class="form-control selectpicker" onchange="karadio.Select()" data-size="15"></select>
                                     </div>
                                 </div>
 
@@ -135,14 +111,14 @@
                                         <div id="vol1_range" class="slider shor"></div>
                                     </div>
                                     <div class="c3 col-xs-1 col-sm-1 col-lg-1">
-                                        <p id="vol1_span" class="form-control-static">XXX</p>
+                                        <p id="vol1_span" class="form-control-static"></p>
                                     </div>
                                 </div>
 
                                 <div class="form-group p">
                                     <label for="meta" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Playing:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="meta" class="form-control-static">XXX</p>
+                                        <p id="meta" class="form-control-static"></p>
                                         <img id="icon" src="" />
                                     </div>
                                 </div>
@@ -163,7 +139,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="panel-title pull-left">
-                                    <span class="trn">Station No</span> <span id="curst">XXX</span>
+                                    <span class="trn">Station No</span> <span id="curst"></span>
                                 </div>
                                 <div class="togglebutton text-right">
                                     <label>
@@ -176,7 +152,7 @@
                                 <div id="lname" class="form-group p">
                                     <label for="name" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Name:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="name" class="form-control-static">XXX</p>
+                                        <p id="name" class="form-control-static"></p>
                                         <img id="icon" src="" />
                                     </div>
                                 </div>
@@ -184,14 +160,14 @@
                                 <div id="ldescr" class="form-group p">
                                     <label for="descr" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Description:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="descr" class="form-control-static">XXX</p>
+                                        <p id="descr" class="form-control-static"></p>
                                     </div>
                                 </div>
 
                                 <div id="lgenre" class="form-group p">
                                     <label for="genre" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Genre:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="genre" class="form-control-static">XXX</p>
+                                        <p id="genre" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -199,8 +175,8 @@
                                     <label for="not1" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Notice:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
                                         <p class="form-control-static">
-                                            <span id="not1">XXX</span>
-                                            <span id="not2">XXX</span>
+                                            <span id="not1"></span>
+                                            <span id="not2"></span>
                                         </p>
                                     </div>
                                 </div>
@@ -208,7 +184,7 @@
                                 <div id="lbitr" class="form-group p">
                                     <label for="bitr" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Bitrate:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="bitr" class="form-control-static">XXX</p>
+                                        <p id="bitr" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -216,7 +192,7 @@
                                     <label for="url1" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">URL:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
                                         <p id="url1" class="form-control-static">
-                                            <a target="_blank" href="#" id="url2">XXX</a>
+                                            <a target="_blank" href="#" id="url2"></a>
                                         </p>
                                     </div>
                                 </div>
@@ -266,7 +242,7 @@
                                 <div class="form-group p">
                                     <label for="time" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Current time:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="time" class="form-control-static">XXX</p>
+                                        <p id="time" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -362,7 +338,7 @@
                                         <div class="form-group p">
                                             <label for="add_slot" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Slot number:</label>
                                             <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <p id="add_slot" class="form-control-static">XXX</p>
+                                                <p id="add_slot" class="form-control-static"></p>
                                             </div>
                                         </div>
 
@@ -508,7 +484,7 @@
                                         <div id="treble_range" class="slider shor"></div>
                                     </div>
                                     <div class="c3 col-xs-1 col-sm-1 col-lg-1">
-                                        <p id="treble_span" class="form-control-static">XXX</p>
+                                        <p id="treble_span" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -518,7 +494,7 @@
                                         <div id="treblefreq_range" class="slider shor"></div>
                                     </div>
                                     <div class="c3 col-xs-1 col-sm-1 col-lg-1">
-                                        <p id="treblefreq_span" class="form-control-static">XXX</p>
+                                        <p id="treblefreq_span" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -528,7 +504,7 @@
                                         <div id="bass_range" class="slider shor"></div>
                                     </div>
                                     <div class="c3 col-xs-1 col-sm-1 col-lg-1">
-                                        <p id="bass_span" class="form-control-static">XXX</p>
+                                        <p id="bass_span" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -538,7 +514,7 @@
                                         <div id="bassfreq_range" class="slider shor"></div>
                                     </div>
                                     <div class="c3 col-xs-1 col-sm-1 col-lg-1">
-                                        <p id="bassfreq_span" class="form-control-static">XXX</p>
+                                        <p id="bassfreq_span" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -548,7 +524,7 @@
                                         <div id="spacial_range" class="slider shor"></div>
                                     </div>
                                     <div class="c3 col-xs-1 col-sm-1 col-lg-1">
-                                        <p id="spacial_span" class="form-control-static">XXX</p>
+                                        <p id="spacial_span" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -558,7 +534,7 @@
                                         <div id="vol2_range" class="slider shor"></div>
                                     </div>
                                     <div class="c3 col-xs-1 col-sm-1 col-lg-1">
-                                        <p id="vol2_span" class="form-control-static">XXX</p>
+                                        <p id="vol2_span" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -638,7 +614,7 @@
                                 <div class="form-group">
                                     <label for="Mac" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Mac Address:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="Mac" class="form-control-static">XXX</p>
+                                        <p id="Mac" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -795,14 +771,13 @@
 
 
         </div>
-
-
     </div> <!-- /container -->
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rsvp/3.5.0/rsvp.min.js"        integrity="sha256-/0j/Zyz/OxVIMCzlzhRF1BGs+3Ha4p2eLBiLfS6R8bI=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/basket.js/0.5.2/basket.min.js" integrity="sha256-O9J7atQ3NCvp5ZbCiMTbHvBQaMpgkX60oVj2J5iua/o=" crossorigin="anonymous"></script>
     <script>
+        //LOAD ALL SCRIPTS IN ORDER FROM THE CACHE:
         basket.require(
             { url: 'https://code.jquery.com/jquery-3.2.1.min.js' },
             { url: 'https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js' },
@@ -813,13 +788,11 @@
             { url: 'bootstrap/ripples.min.js' },
             { url: 'bootstrap/material.min.js' },
             { url: 'https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.js' },
-            { url: 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js' }//,
-            //{ url: 'script.js' }
+            { url: 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js' }//, //ADD AFTER DEVELOPMENT
+          //{ url: 'script.js' } //ADD AFTER DEVELOPMENT
         );
     </script>
-
-
-    <script src="script.js"></script>
+    <script src="script.js"></script> <!-- REMOVE AFTER DEVELOPMENT -->
 
 
 </body>
