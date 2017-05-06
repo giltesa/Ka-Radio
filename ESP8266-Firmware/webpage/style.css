@@ -37,6 +37,10 @@ body {
 	width: 16px;
 }
 
+p#url1{
+    display: inline-block;
+}
+
 .bootstrap-select{
     margin-top: 0px;
 }
@@ -127,6 +131,14 @@ body {
 	height: 24px;
 }
 
+#stationsTable {
+  table-layout:fixed;
+}
+#stationsTable td.hidden-xs {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 #stationsTable .material-icons {
 	font-size: 20px;
 }

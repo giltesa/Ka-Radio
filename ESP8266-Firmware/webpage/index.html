@@ -116,10 +116,9 @@
                                 </div>
 
                                 <div class="form-group p">
-                                    <label for="meta" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Playing:</label>
+                                    <label for="playing" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Playing:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="meta" class="form-control-static"></p>
-                                        <img id="icon" src="" />
+                                        <p id="playing" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -139,7 +138,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="panel-title pull-left">
-                                    <span class="trn">Station No</span> <span id="curst"></span>
+                                    <span class="trn">Station No:</span> <span id="curst"></span>
                                 </div>
                                 <div class="togglebutton text-right">
                                     <label>
@@ -191,9 +190,7 @@
                                 <div id="lurl" class="form-group p">
                                     <label for="url1" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">URL:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="url1" class="form-control-static">
-                                            <a target="_blank" href="#" id="url2"></a>
-                                        </p>
+                                        <a target="_blank" href="#" id="url2"><p id="url1" class="form-control-static"></p></a>
                                     </div>
                                 </div>
 
@@ -246,24 +243,24 @@
                                     </div>
                                 </div>
 
-                                <div id="ss" class="form-group">
+                                <div class="form-group">
                                     <label for="sleepdelay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Sleep:</label>
                                     <div class="col-xs-8 col-sm-8 col-lg-8">
-                                        <input type="text" id="sleepdelay" class="form-control" onkeyup="karadio.sleepup(event)" />
+                                        <input type="text" id="sleepdelay" class="form-control" onkeyup="karadio.sleepUp(event)" />
                                     </div>
                                     <div class="col-xs-2 col-sm-2 col-lg-2">
                                         <p class="form-control-static"><span class="trn">In:</span> <span id="sminutes">0</span> <span class="trn">Sec.</span></p>
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
                                         <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startSleep()" title="Start"><i class="material-icons">done</i></button>
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopSleep()" title="Stop"><i class="material-icons">clear</i></button>
+                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopSleep()" title="Stop"><i class="material-icons">clear</i></button>                                    
                                     </div>
                                 </div>
 
-                                <div id="sw" class="form-group">
+                                <div class="form-group">
                                     <label for="wakedelay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Wake:</label>
                                     <div class="col-xs-8 col-sm-8 col-lg-8">
-                                        <input type="text" id="wakedelay" class="form-control" onkeyup="karadio.wakeup(event)" />
+                                        <input type="text" id="wakedelay" class="form-control" onkeyup="karadio.wakeUp(event)" />
                                     </div>
                                     <div class="col-xs-2 col-sm-2 col-lg-2">
                                         <p class="form-control-static"><span class="trn">In:</span> <span id="wminutes">0</span> <span class="trn">Sec.</span></p>
@@ -419,39 +416,7 @@
                                                 <th style="width:5%;"></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <!-- DELETE ALL ROWS -->
-                                            <!--
-                                            <tr>
-                                                <td>0</td>
-                                                <td>Europe1</td>
-                                                <td class="hidden-xs">www.listenlive.eu</td>
-                                                <td class="hidden-xs">/europe1.m3u</td>
-                                                <td class="hidden-xs">80</td>
-                                                <td class="hidden-xs">0</td>
-                                                <td><a href="#" onclick="editStation(0)"><i class="material-icons theme">edit</i></a></td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>RTL</td>
-                                                <td class="hidden-xs">ais.rtl.fr</td>
-                                                <td class="hidden-xs">/rtl-1-44-128</td>
-                                                <td class="hidden-xs">8080</td>
-                                                <td class="hidden-xs">100</td>
-                                                <td><a href="#" onclick="editStation(1)"><i class="material-icons theme">edit</i></a></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>M2 80's</td>
-                                                <td class="hidden-xs">www.m2radio.fr</td>
-                                                <td class="hidden-xs">/pls/m280.m3u</td>
-                                                <td class="hidden-xs">0288</td>
-                                                <td class="hidden-xs">25</td>
-                                                <td><a href="#" onclick="editStation(2)"><i class="material-icons theme">edit</i></a></td>
-                                            </tr>
-                                            -->
-                                            <!-- END DELETE ALL ROWS -->
-                                        </tbody>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
 

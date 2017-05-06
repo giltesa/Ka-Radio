@@ -39,9 +39,9 @@ var translations = {
         fr: "",
         es: "Volumen"
     },
-    "Station No": {
+    "Station No:": {
         fr: "",
-        es: "Estación núm."
+        es: "Estación núm:"
     },
     "Full": {
         fr: "",
@@ -378,6 +378,10 @@ var translations = {
     "History": {
         fr: "",
         es: "Historial"
+    },
+    "Working.. Please Wait": {
+        fr: "",
+        es: "Trabajando por favor espere..."
     }
-
+    
 };
