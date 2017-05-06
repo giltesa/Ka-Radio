@@ -382,6 +382,18 @@ var translations = {
     "Working.. Please Wait": {
         fr: "",
         es: "Trabajando por favor espere..."
+    },
+    "Error, try again": {
+        fr: "",
+        es: "Error, vuelva a intentarlo"
+    },
+    "Started, Good night!": {
+        fr: "",
+        es: "Activado, !buenas noches!"
+    },
+    "Started": {
+        fr: "",
+        es: "Activado"
     }
-    
+
 };

@@ -246,13 +246,6 @@ function Karadio()
 
 
 
-    /*var labelSleep = function(label) // PRIVATED
-    {
-        $('#sminutes').text(label);
-    };*/
-
-
-
     this.sleepUp = function(ev)
     {
         if( ev.keyCode == 13 )
@@ -269,7 +262,9 @@ function Karadio()
         var h0  = parseInt(hop[0], 10);
         var h1  = parseInt(hop[1], 10);
 
-        if( !isNaN(h0) )
+        if( isNaN(h0) )
+            showToast("Error, try again");
+        else
         {
             if( isNaN(h1) )
                 valm = h0; // minute mode
@@ -289,15 +284,7 @@ function Karadio()
             }
 
             webSocket.send("startSleep=" + valm + "&");
-            //labelSleep("Started, Good night!");
-            //window.setTimeout(labelSleep, 2000, (valm * 60) - 2);
             showToast("Started, Good night!");
-        }
-        else
-        {
-            //labelSleep("Error, try again");
-            //window.setTimeout(labelSleep, 2000, "0");
-            showToast("Error, try again");
         }
     };
 
@@ -306,17 +293,8 @@ function Karadio()
     this.stopSleep = function()
     {
         webSocket.send("stopSleep");
-        //labelSleep("0");
-        //window.setTimeout(labelSleep, 2000, $("#sleepdelay").val());
         $('#sminutes').text("0");
     };
-
-
-
-    /*this.labelWake = function(label)
-    {
-        $('#wminutes').text(label);
-    };*/
 
 
 
@@ -336,7 +314,9 @@ function Karadio()
         var h0  = parseInt(hop[0], 10);
         var h1  = parseInt(hop[1], 10);
 
-        if( !isNaN(h0) )
+        if( isNaN(h0) )
+            showToast("Error, try again");
+        else
         {
             if( isNaN(h1) )
                 valm = h0; // minute mode
@@ -356,15 +336,7 @@ function Karadio()
             }
 
             webSocket.send("startWake=" + valm + "&");
-            //labelWake("Started");
-            //window.setTimeout(labelWake, 2000, (valm * 60) - 2);
             showToast("Started");
-        }
-        else
-        {
-            //labelWake("Error, try again");
-            //window.setTimeout(labelWake, 2000, "0");
-            showToast("Error, try again");
         }
     };
 
@@ -373,7 +345,6 @@ function Karadio()
     this.stopWake = function()
     {
         webSocket.send("stopWake");
-        //labelWake("0");
         $('#wminutes').text("0");
     };
 
