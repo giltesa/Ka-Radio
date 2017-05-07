@@ -66,8 +66,13 @@ p#url1{
 	margin-top: 8px !important;
 }
 
+.form-group.range .c3{
+    padding-right: 0px;
+}
 .form-group.range .c3 p{
-	padding-top: 4px
+	padding-top: 8px;
+    padding-bottom: 0;
+    font-size: smaller;
 }
 
 .panel-heading .text-right button {

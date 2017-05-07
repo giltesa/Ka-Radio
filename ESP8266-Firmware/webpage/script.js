@@ -44,7 +44,7 @@ function Karadio()
             window.clearInterval(timeID);
         timeID = window.setInterval(dTime, 1000);
 
-        loadStationsList();
+        loadStationSelect();
         checkWebSocket();
         refresh(); //REVISAR
         wifi(0);
@@ -350,13 +350,16 @@ function Karadio()
 
 
 
-    this.showToast = function(value)
+    this.showToast = function(value, time)
     {
-        $.snackbar({
+        var $toast = $.snackbar({
             content: translator.get(value),
             style:   "deeppurple",
-            timeout: 2000
+            timeout: (time == undefined ? 2000 : time)
         });
+        $toast.snackbar("show");
+
+        return $toast;
     };
 
 
@@ -471,18 +474,30 @@ function Karadio()
 
     this.soundResp = function(arr)
     {
-        getRange("#treble_range").set( arr["treb"].replace(/\\/g, "") );
-        getRange("#bass_range").set( arr["bass"].replace(/\\/g, "") );
-        getRange("#treblefreq_range").set( arr["tfreq"].replace(/\\/g, "") );
-        getRange("#bassfreq_range").set( arr["bfreq"].replace(/\\/g, "") );
-        getRange("#spacial_range").set( arr["spac"].replace(/\\/g, "") );
-        getRange("#vol_range").set( arr["vol"].replace(/\\/g, "") );
+        var $range;
 
-        onRangeChange('treble_range', 'treble_span', 1.5, false, true);
-        onRangeChange('bass_range', 'bass_span', 1, false, true);
-        onRangeChangeFreqTreble('treblefreq_range', 'treblefreq_span', 1, false, true);
-        onRangeChangeFreqBass('bassfreq_range', 'bassfreq_span', 10, false, true);
-        onRangeChangeSpatial('spacial_range', 'spacial_span', true);
+        $range = getRange("#treble_range");
+        $range.set(arr["treb"].replace(/\\/g, ""));
+        onRangeChange($range, 1.5, false, true);
+
+        $range = getRange("#bass_range");
+        $range.set(arr["bass"].replace(/\\/g, ""));
+        onRangeChange($range, 1, false, true);
+
+        $range = getRange("#treblefreq_range");
+        $range.set(arr["tfreq"].replace(/\\/g, ""));
+        onRangeChangeFreqTreble($range, 1, false, true);
+
+        $range = getRange("#bassfreq_range");
+        $range.set(arr["bfreq"].replace(/\\/g, ""));
+        onRangeChangeFreqBass($range, 10, false, true);
+
+        $range = getRange("#spacial_range");
+        $range.set(arr["spac"].replace(/\\/g, ""));
+        onRangeChangeSpatial($range, true);
+
+        $range = getRange("#vol_range");
+        $range.set(arr["vol"].replace(/\\/g, ""));
         onRangeVolChange(getRange("#vol_range").get(), false);
     };
 
@@ -534,36 +549,37 @@ function Karadio()
         var $range;
 
         $range = getRange("#treble_range");
-        $range = $range.set(0);
-        onRangeChange($range, 'treble_span', 1.5, false);
+        $range.set(0);
+        onRangeChange($range, 1.5, false);
 
         $range = getRange("#bass_range");
-        $range = $range.set(0);
-        onRangeChange($range, 'bass_span', 1, false);
+        $range.set(0);
+        onRangeChange($range, 1, false);
 
         $range = getRange("#treblefreq_range");
-        $range = $range.set(1);
-        onRangeChangeFreqTreble($range, 'treblefreq_span', 1, false);
+        $range.set(1);
+        onRangeChangeFreqTreble($range, 1, false);
 
         $range = getRange("#bassfreq_range");
-        $range = $range.set(2);
-        onRangeChangeFreqBass($range, 'bassfreq_span', 10, false);
+        $range.set(2);
+        onRangeChangeFreqBass($range, 10, false);
 
         $range = getRange("#spacial_range");
-        $range = $range.set(0);
-        onRangeChangeSpatial($range, 'spacial_span');
+        $range.set(0);
+        onRangeChangeSpatial($range);
     };
 
 
 
-    this.onRangeChange = function($range, spanID, multiplier, rotate, nosave)
+    this.onRangeChange = function($range, multiplier, rotate, nosave)
     {
-        var val = $range.get();
+        var spanID = "#"+ $range.target["id"].replace("range","span");
+        var value  = parseInt($range.get());
 
         if( rotate )
-            val = $range.options.range.max - val;
+            value = $range.options.range.max - value;
 
-        $(spanID).text((val * multiplier) + " dB");
+        $(spanID).text((value * multiplier) + " dB");
 
         if( typeof(nosave) == 'undefined' )
             saveSoundSettings();
@@ -571,14 +587,15 @@ function Karadio()
 
 
 
-    this.onRangeChangeFreqTreble = function($range, spanID, multiplier, rotate, nosave)
+    this.onRangeChangeFreqTreble = function($range, multiplier, rotate, nosave)
     {
-        var val = $range.get();
+        var spanID = "#"+ $range.target.id.replace("range","span");
+        var value  = parseInt($range.get());
 
         if( rotate )
-            val = $range.options.range.max - val;
+            value = $range.options.range.max - value;
 
-        $(spanID).text("From " + (val * multiplier) + " kHz");
+        $(spanID).text(/*"From " +*/ (value * multiplier) + " kHz");
 
         if( typeof(nosave) == 'undefined' )
             saveSoundSettings();
@@ -586,14 +603,15 @@ function Karadio()
 
 
 
-    this.onRangeChangeFreqBass = function($range, spanID, multiplier, rotate, nosave)
+    this.onRangeChangeFreqBass = function($range, multiplier, rotate, nosave)
     {
-        var val = $range.get();
+        var spanID = "#"+ $range.target.id.replace("range","span");
+        var value  = parseInt($range.get());
 
         if( rotate )
-            val = $range.options.range.max - val;
+            value = $range.options.range.max - value;
 
-        $(spanID).text("Under " + (val * multiplier) + " Hz");
+        $(spanID).text(/*"Under " +*/ (value * multiplier) + " Hz");
 
         if( typeof(nosave) == 'undefined' )
             saveSoundSettings();
@@ -601,16 +619,18 @@ function Karadio()
 
 
 
-    this.onRangeChangeSpatial = function($range, $spanID, nosave)
+    this.onRangeChangeSpatial = function($range, nosave)
     {
+        var spanID = "#"+ $range.target.id.replace("range","span");
+        var value  = parseInt($range.get());
         var label;
 
-        switch( $range.get() )
+        switch( value )
         {
-            case '0': label = "Off";     break;
-            case '1': label = "Minimal"; break;
-            case '2': label = "Normal";  break;
-            case '3': label = "Maximal"; break;
+            case 0: label = translator.get("Off");     break;
+            case 1: label = translator.get("Minimal"); break;
+            case 2: label = translator.get("Normal");  break;
+            case 3: label = translator.get("Maximal"); break;
         }
 
         $(spanID).text(label);
@@ -639,8 +659,8 @@ function Karadio()
     {
         var longVal = logValue(value);
 
-        $('#vol1_span').text((longVal * -0.5) + " dB");
-        $('#vol2_span').text((longVal * -0.5) + " dB");
+        $('#vol1_span').text(parseInt(longVal * -0.5) + " dB");
+        $('#vol2_span').text(parseInt(longVal * -0.5) + " dB");
         getRange("#vol1_range").set(value);
         getRange("#vol2_range").set(value);
 
@@ -862,7 +882,7 @@ function Karadio()
             + "&treble="     + getRange("#treble_range").get()
             + "&bassfreq="   + getRange("#bassfreq_range").get()
             + "&treblefreq=" + getRange("#treblefreq_range").get()
-            + "&spacial="    + getRange("#spacial_range").get()
+            + "&spacial="    + parseInt(getRange("#spacial_range").get())
             + "&"
         );
     };
@@ -880,15 +900,19 @@ function Karadio()
 
     this.saveStation = function()
     {
-        var file = $('#add_path').val();
-        var url  = $('#add_url').val();
-        var jfile;
+        var
+            slot = $('#edit_slot').text(),
+            name = $('#edit_name').val(),
+            url  = $('#edit_url' ).val().replace(/^https?:\/\//, ''),
+            file = $('#edit_file').val(),
+            port = $('#edit_port').val(),
+            ovol = parseInt(getRange("#edit_ovol").get()),
+            jfile;
 
         if( !(file.substring(0, 1) === "/") )
             file = "/" + file;
 
         jfile = fixedEncodeURIComponent(file);
-        url   = url.replace(/^https?:\/\//, '');
 
         console.log("Path: " + file);
         console.log("JSON: " + jfile);
@@ -898,34 +922,16 @@ function Karadio()
             xhr = new XMLHttpRequest();
             xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
             xhr.setRequestHeader(content, ctype);
-
-            xhr.send(
-                "nb=" + 1
-                + "&id="   + $('#add_slot').val()
-                + "&url="  + url
-                + "&name=" + $('#add_name').val()
-                + "&file=" + jfile
-                + "&ovol=" + $('#ovol').val()
-                + "&port=" + $('#add_port').val()
-                + "&&"
-            );
-
-            localStorage.setItem($('#add_slot').val(),
-                "{\"Name\":\""     + $('#add_name').val()
-                + "\",\"URL\":\""  + url
-                + "\",\"File\":\"" + file
-                + "\",\"Port\":\"" + $('#add_port').val()
-                + "\",\"ovol\":\"" + $('#ovol').val()
-                + "\"}"
-            );
+            xhr.send("nb="+ 1 +"&id="+ slot +"&url="+ url +"&name="+ name +"&file="+ jfile +"&ovol="+ ovol +"&port="+ port +"&&");
+            localStorage.setItem(slot, "{\"Name\":\""+ name +"\",\"URL\":\""+ url +"\",\"File\":\""+ file +"\",\"Port\":\""+ port +"\",\"ovol\":\""+ ovol +"\"}");
         }
         catch(ex){
             console.log("error save " + ex);
         }
 
-        abortStation(); // to erase the edit field
-        loadStations();
-        loadStationsList();
+        abortStation();
+        loadStationSelect();
+        loadStationTable();
     };
 
 
@@ -943,20 +949,20 @@ function Karadio()
 
         function cpedit(arr)
         {
-            $('#add_url').val(arr["URL"]);
-            $('#add_name').val(arr["Name"]);
-            $('#add_path').val(arr["File"]);
+            $('#edit_url').val(arr["URL"]);
+            $('#edit_name').val(arr["Name"]);
+            $('#edit_file').val(arr["File"]);
 
             if( arr["Port"] == "0" )
                 arr["Port"] = "80";
 
-            $('#add_port').val(arr["Port"]);
+            $('#edit_port').val(arr["Port"]);
             $('#editStationDiv').removeClass("hidden");
 
-            $('#ovol').val(arr["ovol"]);
+            getRange("#edit_ovol").set(arr["ovol"]);
         }
 
-        $('#add_slot').text(id);
+        $('#edit_slot').text(id);
         idstr = id.toString();
 
         if( localStorage.getItem(idstr) != null )
@@ -995,58 +1001,63 @@ function Karadio()
 
 
 
-    this.refreshList = function()
+    this.refreshStations = function()
     {
-        showToast("Working.. Please Wait");
-        intervalid = window.setTimeout(refreshListtemp, 2);
+        var $toast = showToast("Reloaded the stations.. Please Wait", 0);
+
+        window.setTimeout(function()
+        {
+            if( stchanged )
+                stChanged();
+
+            localStorage.clear();
+            loadStationSelect();
+            loadStationTable();
+            refresh();
+
+            $toast.snackbar("hide");
+        }, 500);
     };
 
 
 
-    this.refreshListtemp = function()
+    this.clearStations = function()
     {
-        if( stchanged )
-            stChanged();
+        var
+            t1 = translator.get("Warning: This will clear all stations."),
+            t2 = translator.get("Be sure to save station before."),
+            t3 = translator.get("Clear now?");
 
-        localStorage.clear();
-        loadStationsList();
-        loadStations();
-        refresh();
-    };
-
-
-
-    this.clearList = function()
-    {
-        showToast("Working.. Please Wait");
-
-        if( confirm("Warning: This will clear all stations.\n Be sure to save station before.\nClear now?") )
+        if( !confirm(t1 +"\n"+ t2 +"\n\n"+ t3) )
+            refresh();
+        else
         {
             xhr = new XMLHttpRequest();
             xhr.open("POST", (!debug ? "clear" : "http://"+karadioDebugURL+"/clear"), false);
             xhr.setRequestHeader(content, ctype);
             xhr.send();
-            refreshList();
-            window.setTimeout(loadStations, 5);
-        }
-        else
-        {
-            refresh();
+            refreshStations();
+            //window.setTimeout(loadStationTable, 5); //DUPLICATE DELETE???
         }
     };
 
 
 
-    //this.removeOptions = function(selectbox){}
-
-
-
-    this.upgrade = function()
+    this.upgradeFirmware = function()
     {
         if( webSocket.readyState == webSocket.OPEN )
+        {
+            var $toast = showToast("Updating the firmware, the page will refresh when finished, please wait...", 0);
+
             webSocket.send("upgrade");
 
-        alert("Rebooting to the new release\nPlease refresh the page in few seconds.");
+            window.setTimeout(function(){
+                $toast.snackbar("hide");
+                window.setTimeout(function(){
+                    window.location.reload(true);
+                }, 2000);
+            }, 30000);
+        }
     };
 
 
@@ -1062,7 +1073,7 @@ function Karadio()
         {
             loadExtPage( $("#yours-dialog").find(".modal-body"), yoursURL );
             translator.lang(Cookies.get("language"));
-            setTheme(null, null);
+            setTheme();
         });
     };
 
@@ -1091,7 +1102,7 @@ function Karadio()
                     "<div class='text-right'><i class='material-icons'>clear</i></div>"+
                 "</div>";
 
-                setTimeout(function(){
+                window.setTimeout(function(){
                     $.snackbar({
                         content:     htmlContent,
                         style:       "deeppurple",
@@ -1174,7 +1185,7 @@ function Karadio()
                         console.log("error " + ex);
                     }
                 }
-                loadStationsList();
+                loadStationSelect();
             };
 
             file = $('#fileload').files[0];
@@ -1302,7 +1313,7 @@ function Karadio()
                     console.log("error " + ex);
                 }
             }
-            loadStationsList();
+            loadStationSelect();
         }
 
         $("#stsave").prop("disabled", true);
@@ -1313,7 +1324,7 @@ function Karadio()
 
 
 
-    this.loadStations = function()
+    this.loadStationTable = function()
     {
         var id      = 0;
         var $tbody  = $("#stationsTable").find('tbody');
@@ -1334,7 +1345,7 @@ function Karadio()
                     +"<td class='hidden-xs'>"+ getVal(arr["File"]) +"</td>"
                     +"<td class='hidden-xs'>"+ getVal(arr["Port"]) +"</td>"
                     +"<td class='hidden-xs'>"+ getVal(arr["ovol"]) +"</td>"
-                    +"<td><a href='#' onclick='editStation("+ id +")'><i class='material-icons'>edit</i></a></td>"
+                    +"<td><a href='#' onclick='editStation("+ id +")'><i class='material-icons theme'>edit</i></a></td>"
                 +"</tr>"
             );
         }
@@ -1407,11 +1418,12 @@ function Karadio()
 
         $tbody.empty();
         $tbody.append($trRows);
+        setTheme();
     };
 
 
 
-    this.loadStationsList = function()
+    var loadStationSelect = function()
     {
         var $select, $options=[], id=0;
 
@@ -1481,49 +1493,26 @@ function Karadio()
 
 
 
-    /*this.getSelIndex = function()
+    this.printStationList = function()
     {
+        var printWin, html, table;
 
-    };*/
+        table = $('#stationsTable').clone();
 
+        $(table).find('tr').find('th:eq(6), td:eq(6)').remove();
 
+        $(table).find('tr').find('td:eq(1)').each(function(){
+            if( $(this).text().trim() == "" )
+                $(this).parent().remove();
+        });
 
-    /*this.setMainHeight = function(name)
-    {
-
-    };*/
-
-
-
-    this.printList = function()
-    {
-        var html = "<html>";
-        var id = 0;
-
+        html  = "<html>";
+        html += "<h1>"+ translator.get("Karadio Stations list") +"</h1><hr><br/>";
+        html += table[0].outerHTML;
         html += "</html>";
-        html += "<h1>KaraDio Stations list</h1><br/><hr><br/>";
 
-        for( id ; id < maxStation ; id++ )
-        {
-            idstr = id.toString();
-            if( localStorage.getItem(idstr) != null )
-            {
-                try{
-                    arr = JSON.parse(localStorage.getItem(idstr));
-                }catch(ex){
-                    console.log("error" + ex);
-                }
-
-                if( arr["Name"].length > 0 ){
-                    html += idstr + "&nbsp;&nbsp;" + arr["Name"] + "<br/>";
-                }
-            }
-        }
-
-        var printWin = window.open('', '', 'left=0,top=0,width=1,height=1,toolbar=0,scrollbars=0,status  =0');
+        printWin = window.open("");
         printWin.document.write(html);
-        printWin.document.close();
-        printWin.focus();
         printWin.print();
         printWin.close();
     };
@@ -1558,6 +1547,28 @@ function Karadio()
         return $(tagID).get(0).noUiSlider;
     };
 
+
+
+    //function setTheme($selector, newValue)
+    this.setTheme = function($selector, newValue)
+    {
+        var newTheme = (newValue !== undefined ? newValue : Cookies.get("theme"));
+
+        //Change the color in the color selection dropdown:
+        if( $selector !== undefined )
+        {
+            $selector.selectpicker("setStyle", "btn-primary btn-success btn-info btn-warning btn-danger btn-inverse", "remove");
+            $selector.selectpicker("setStyle", "btn-" + newTheme, "add");
+            $selector.selectpicker('refresh');
+        }
+
+        //Apply the new theme on the web:
+        $("button.theme").removeClass("btn-primary btn-success btn-info btn-warning btn-danger btn-inverse").addClass("btn-" + newTheme);
+        $("nav.theme").removeClass("navbar-primary navbar-success navbar-info navbar-warning navbar-danger navbar-inverse").addClass("navbar-" + newTheme);
+
+        $(".material-icons.theme").css("color", $("#theme-" + newTheme).css("background-color") );
+        $("a.theme").css("color", $("#theme-" + newTheme).css("background-color") );
+    }
 
 
     return this;
@@ -1597,7 +1608,7 @@ $(document).ready(function(ev)
 
     $("#stations").click(function(ev)
     {
-        karadio.loadStations();
+        karadio.loadStationTable();
     });
 
     $("#settings").click(function(ev)
@@ -1612,12 +1623,12 @@ $(document).ready(function(ev)
 
     $("#about").one("click", function(ev){
         karadio.loadAboutPage();
-        setTheme(null, null);
+        karadio.setTheme();
     });
 
     $('button').focus(function(){
         var btn = this;
-        setTimeout(function(){ btn.blur(); }, 100);
+        window.setTimeout(function(){ btn.blur(); }, 100);
     });
 
 
@@ -1677,7 +1688,7 @@ $(document).ready(function(ev)
         karadio.mVol(this.get() / this.options.range.max);
     });
 
-    var slider4 = $('#ovol').get(0);
+    var slider4 = $('#edit_ovol').get(0);
     noUiSlider.create(slider4, {
         start   : [-126],
         connect : [true, false],
@@ -1693,7 +1704,7 @@ $(document).ready(function(ev)
         range   : { min: -8, max: 7 }
     });
     slider5.noUiSlider.on('change', function(){
-        karadio.onRangeChange($(this), '#treble_span', 1.5, false);
+        karadio.onRangeChange(this, 1.5, false);
     });
 
     var slider6 = $('#treblefreq_range').get(0);
@@ -1704,7 +1715,7 @@ $(document).ready(function(ev)
         range   : { min: 1, max: 15 }
     });
     slider6.noUiSlider.on('change', function(){
-        karadio.onRangeChangeFreqTreble($(this), '#treblefreq_span', 1, false);
+        karadio.onRangeChangeFreqTreble(this, 1, false);
     });
 
     var slider7 = $('#bass_range').get(0);
@@ -1715,7 +1726,7 @@ $(document).ready(function(ev)
         range   : { min: 0, max: 15 }
     });
     slider7.noUiSlider.on('change', function(){
-        karadio.onRangeChange($(this), '#bass_span', 1, false);
+        karadio.onRangeChange(this, 1, false);
     });
 
     var slider8 = $('#bassfreq_range').get(0);
@@ -1726,7 +1737,7 @@ $(document).ready(function(ev)
         range   : { min: 2, max: 15 }
     });
     slider8.noUiSlider.on('change', function(){
-        karadio.onRangeChangeFreqBass($(this), '#bassfreq_span', 10, false);
+        karadio.onRangeChangeFreqBass(this, 10, false);
     });
 
     var slider9 = $('#spacial_range').get(0);
@@ -1737,7 +1748,7 @@ $(document).ready(function(ev)
         range   : { min: 0, max: 3 }
     });
     slider9.noUiSlider.on('change', function(){
-        karadio.onRangeChangeSpatial($(this), '#spacial_span');
+        karadio.onRangeChangeSpatial(this);
     });
 
 
@@ -1758,7 +1769,7 @@ $(document).ready(function(ev)
         else
         {
             $(this).selectpicker('val', Cookies.get("theme"));
-            setTheme($(this), Cookies.get("theme"));
+            karadio.setTheme($(this), Cookies.get("theme"));
         }
 
         $(this).selectpicker('refresh');
@@ -1770,29 +1781,9 @@ $(document).ready(function(ev)
 
     $("#theme-select").change(function(ev)
     {
-        setTheme($(this), this.value);
+        karadio.setTheme($(this), this.value);
         Cookies.set("theme", this.value, { expires: 365 });
     });
-
-    function setTheme($selector, newValue)
-    {
-        var newTheme = newValue !== null ? newValue : Cookies.get("theme");
-
-        //Change the color in the color selection dropdown:
-        if( $selector !== null )
-        {
-            $selector.selectpicker("setStyle", "btn-primary btn-success btn-info btn-warning btn-danger btn-inverse", "remove");
-            $selector.selectpicker("setStyle", "btn-" + newTheme, "add");
-            $selector.selectpicker('refresh');
-        }
-
-        //Apply the new theme on the web:
-        $("button.theme").removeClass("btn-primary btn-success btn-info btn-warning btn-danger btn-inverse").addClass("btn-" + newTheme);
-        $("nav.theme").removeClass("navbar-primary navbar-success navbar-info navbar-warning navbar-danger navbar-inverse").addClass("navbar-" + newTheme);
-
-        $(".material-icons.theme").css("color", $("#theme-" + newTheme).css("background-color") );
-        $("a.theme").css("color", $("#theme-" + newTheme).css("background-color") );
-    }
 
 
     // START TRANSLATIONS

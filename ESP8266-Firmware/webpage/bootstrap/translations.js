@@ -19,7 +19,7 @@ var translations = {
         fr: "",
         es: "Idioma"
     },
-    "Select stations": {
+    "Select station": {
         fr: "",
         es: "Seleccionar emisora"
     },
@@ -139,6 +139,26 @@ var translations = {
         fr: "",
         es: "Administrar emisoras"
     },
+    "Reloaded the stations.. Please Wait": {
+        fr: "",
+        es: "Recargando estaciones, por favor espere..."
+    },
+    "Karadio Stations list": {
+        fr: "",
+        es: "Karadio: lista de emisoras"
+    },
+    "Warning: This will clear all stations.": {
+        fr: "",
+        es: "Advertencia: Esto borrará todas las estaciones."
+    },
+    "Be sure to save station before.": {
+        fr: "",
+        es: "Asegúrese de guardar las estaciones antes."
+    },
+    "Clear now?": {
+        fr: "",
+        es: "¿Borrarlas ahora?"
+    },
     "No.": {
         fr: "",
         es: "#"
@@ -186,6 +206,22 @@ var translations = {
     "Spacialization:": {
         fr: "",
         es: "Espacialización:"
+    },
+    "Off": {
+        fr: "",
+        es: ""
+    },
+    "Minimal": {
+        fr: "",
+        es: ""
+    },
+    "Normal": {
+        fr: "",
+        es: ""
+    },
+    "Maximal": {
+        fr: "",
+        es: ""
     },
     "Volume:": {
         fr: "",
@@ -286,6 +322,10 @@ var translations = {
     "Upgrade now": {
         fr: "",
         es: "Actualizar ahora"
+    },
+    "Updating the firmware, the page will refresh when finished, please wait...": {
+        fr: "",
+        es: "Actualizando el firmware, la página se refrescara al finalizar, por favor espere..."
     },
     "New firmware %1 available!": {
         fr: "",

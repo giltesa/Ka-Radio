@@ -89,7 +89,7 @@
                         <!-- SELECT STATIONS -->
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <div class="panel-title pull-left trn">Select stations</div>
+                                <div class="panel-title pull-left trn">Select station</div>
                                 <div class="togglebutton text-right">
                                     <label>
                                         <span class="trn">AutoPlay</span> <input type="checkbox" id="aplay" onClick="karadio.autoPlay()" />
@@ -253,7 +253,7 @@
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
                                         <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startSleep()" title="Start"><i class="material-icons">done</i></button>
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopSleep()" title="Stop"><i class="material-icons">clear</i></button>                                    
+                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopSleep()" title="Stop"><i class="material-icons">clear</i></button>
                                     </div>
                                 </div>
 
@@ -333,44 +333,44 @@
                                     <fieldset>
 
                                         <div class="form-group p">
-                                            <label for="add_slot" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Slot number:</label>
+                                            <label for="edit_slot" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Slot number:</label>
                                             <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <p id="add_slot" class="form-control-static"></p>
+                                                <p id="edit_slot" class="form-control-static"></p>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="add_name" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Name:</label>
+                                            <label for="edit_name" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Name:</label>
                                             <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="text" id="add_name" class="form-control" name="name" />
+                                                <input type="text" id="edit_name" class="form-control" name="name" />
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="add_url" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">URL:</label>
+                                            <label for="edit_url" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">URL:</label>
                                             <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="text" id="add_url" class="form-control" name="url" />
+                                                <input type="text" id="edit_url" class="form-control" name="url" />
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="add_path" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Path:</label>
+                                            <label for="edit_file" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Path:</label>
                                             <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="text" id="add_path" class="form-control" name="path" value="/" />
+                                                <input type="text" id="edit_file" class="form-control" name="path" value="/" />
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="add_port" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Port:</label>
+                                            <label for="edit_port" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Port:</label>
                                             <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="number" id="add_port" class="form-control" name="port" value="80" />
+                                                <input type="number" id="edit_port" class="form-control" name="port" value="80" />
                                             </div>
                                         </div>
 
                                         <div class="form-group range0" style="margin-top: 20px;">
-                                            <label for="add_port" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Volume offset:</label>
+                                            <label for="edit_ovol" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Volume offset:</label>
                                             <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <div id="ovol" class="slider shor"></div>
+                                                <div id="edit_ovol" class="slider shor"></div>
                                             </div>
                                         </div>
 
@@ -396,10 +396,10 @@
 
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button type="button" id="refresh" class="btn btn-raised btn-inverse theme" onClick="karadio.refreshList()" title="This will reload the stations from the WebRadio"><i class="material-icons">cached</i></button>
-                                        <button type="button" id="stsave" class="btn btn-raised btn-inverse theme" onClick="karadio.stChanged()" title="This will save all stations to the WebRadio"><i class="material-icons">save</i></button>
-                                        <button type="button" id="clear" disabled class="btn btn-raised btn-inverse theme" onClick="karadio.clearList()" title="Warning: This will clear all stations. Be sure to save them before."><i class="material-icons">delete</i></button>
-                                        <button type="button" id="print" class="btn btn-raised btn-inverse theme" onClick="karadio.printList()" title="Print the list"><i class="material-icons">print</i></button>
+                                        <button type="button" id="refresh" class="btn btn-raised btn-inverse theme" onClick="karadio.refreshStations()"  title="This will reload the stations from the WebRadio"><i class="material-icons">cached</i></button>
+                                        <button type="button" id="stsave"  class="btn btn-raised btn-inverse theme" onClick="karadio.stChanged()"        title="This will save all stations to the WebRadio"><i class="material-icons">save</i></button>
+                                        <button type="button" id="clear"   class="btn btn-raised btn-inverse theme" onClick="karadio.clearStations()"    title="Warning: This will clear all stations. Be sure to save them before."><i class="material-icons">delete</i></button>
+                                        <button type="button" id="print"   class="btn btn-raised btn-inverse theme" onClick="karadio.printStationList()" title="Print the list"><i class="material-icons">print</i></button>
                                     </div>
                                 </div>
 
@@ -410,9 +410,9 @@
                                                 <th class="trn" style="width:5%;">No.</th>
                                                 <th class="trn" style="width:30%;">Name</th>
                                                 <th class="hidden-xs trn" style="width:20%;">URL</th>
-                                                <th class="hidden-xs trn" style="width:25%;">Path</th>
+                                                <th class="hidden-xs trn" style="width:20%;">Path</th>
                                                 <th class="hidden-xs trn" style="width:10%;">Port</th>
-                                                <th class="hidden-xs trn" style="width:5%;">Vol</th>
+                                                <th class="hidden-xs trn" style="width:10%;">Vol</th>
                                                 <th style="width:5%;"></th>
                                             </tr>
                                         </thead>
@@ -584,7 +584,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="add_path" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Use DHCP:</label>
+                                    <label for="dhcp" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Use DHCP:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
                                         <div class="checkbox">
                                             <label>
@@ -713,7 +713,7 @@
 
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.upgrade()" title="Upgrade now"><i class="material-icons">system_update</i> <span class="trn">Upgrade now</span></button>
+                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.upgradeFirmware()" title="Upgrade now"><i class="material-icons">system_update</i> <span class="trn">Upgrade now</span></button>
                                     </div>
                                 </div>
 
