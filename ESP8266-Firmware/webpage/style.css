@@ -25,6 +25,11 @@ body {
 	margin-top: 10px !important;
 }
 
+#lname, #ldescr, #lnot1, #lurl{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-bottom: 0;
+}
 #lname div {
 	padding-top: 7px !important;
 }
@@ -189,13 +194,13 @@ p#url1{
 	border-color: #ebccd1;
 }
 
-#snackbar-container div.pull-left{
+#snackbar-container .pull-left{
     padding-left: 10px;
 }
-#snackbar-container div.pull-left i{
+#snackbar-container .pull-left i{
   vertical-align: middle;
 }
-#snackbar-container div.text-right i{
+#snackbar-container .pull-right i{
     vertical-align: middle;
     padding-right: 10px;
 }
@@ -204,7 +209,8 @@ p#url1{
     padding-top: 2px;
     padding-left: 15px;
 }
-#snackbar-container .wait .text-right{
+#snackbar-container .wait .pull-right{
+    padding-left: 10px;
     padding-right: 10px;
 }
 .spinner {

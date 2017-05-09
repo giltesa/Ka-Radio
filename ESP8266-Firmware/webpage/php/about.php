@@ -163,7 +163,7 @@
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-					<button id="yours-button" type="button" class="btn btn-raised btn-inverse theme" data-toggle="modal" data-target="#yours_dialog"><i class="material-icons">radio</i> <span class="trn">See your prototypes</span></button>
+					<button id="yours_button" type="button" class="btn btn-raised btn-inverse theme" data-toggle="modal" data-target="#yours_dialog"><i class="material-icons">radio</i> <span class="trn">See your prototypes</span></button>
                 </div>
             </div>
 
@@ -221,7 +221,7 @@
                     <tr>
                         <td>giltesa</td>
                         <td class="trn">New web interface with Bootstrap and Material Design theme.</td>
-                        <td class="hidden-xs">2017/04/22</td>
+                        <td class="hidden-xs">2017/05/10</td>
                         <td><a target="_blank" href="https://giltesa.com/?karadio"><i class="material-icons theme">link</i></a></td>
                     </tr>
                 </tbody>

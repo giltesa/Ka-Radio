@@ -63,6 +63,10 @@ var translations = {
         fr: "",
         es: "Género:"
     },
+    "Full URL:": {
+        fr: "",
+        es: "URL completa:"
+    },
     "URL:": {
         fr: "",
         es: "URL:"
@@ -94,14 +98,6 @@ var translations = {
     "Sleep:": {
         fr: "",
         es: "Dormir:"
-    },
-    "In:": {
-        fr: "",
-        es: "En:"
-    },
-    "Sec.": {
-        fr: "",
-        es: "Seg."
     },
     "Wake:": {
         fr: "",
@@ -339,9 +335,9 @@ var translations = {
         fr: "",
         es: "Actualizar ahora"
     },
-    "Updating the firmware, the page will refresh when finished, please wait...": {
+    "Updating the firmware, please wait...": {
         fr: "",
-        es: "Actualizando el firmware, la página se refrescara al finalizar, por favor espere..."
+        es: "Actualizando el firmware, por favor espere..."
     },
     "New firmware %1 available!": {
         fr: "",

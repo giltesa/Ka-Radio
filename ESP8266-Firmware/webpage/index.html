@@ -101,7 +101,7 @@
                                 <div class="form-group">
                                     <label for="stations_select" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Station:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <select id="stations_select" class="form-control selectpicker" onchange="karadio.Select()" data-size="15"></select>
+                                        <select id="stations_select" class="form-control selectpicker" onchange="karadio.selectStation()" data-size="15" data-live-search="true"></select>
                                     </div>
                                 </div>
 
@@ -244,30 +244,32 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="sleep_delay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Sleep:</label>
-                                    <div class="col-xs-8 col-sm-8 col-lg-8">
-                                        <input type="text" id="sleep_delay" class="form-control" onkeyup="karadio.upSleep(event)" />
-                                    </div>
-                                    <div class="col-xs-2 col-sm-2 col-lg-2">
-                                        <p class="form-control-static"><span class="trn">In:</span> <span id="sminutes">0</span> <span class="trn">Sec.</span></p>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startSleep()" title="Start"><i class="material-icons">done</i></button>
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopSleep()" title="Stop"><i class="material-icons">clear</i></button>
+                                    <label for="sleep_time" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Sleep:</label>
+                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                        <input type="text" id="sleep_time" class="form-control" onkeyup="karadio.upSleep(event)" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="wake_delay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Wake:</label>
-                                    <div class="col-xs-8 col-sm-8 col-lg-8">
-                                        <input type="text" id="wake_delay" class="form-control" onkeyup="karadio.upWake(event)" />
-                                    </div>
-                                    <div class="col-xs-2 col-sm-2 col-lg-2">
-                                        <p class="form-control-static"><span class="trn">In:</span> <span id="wminutes">0</span> <span class="trn">Sec.</span></p>
-                                    </div>
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startWake()" title="Start"><i class="material-icons">done</i></button>
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopWake()" title="Stop"><i class="material-icons">clear</i></button>
+                                        <button id="btn_start_sleep" type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startSleep()" title="Start"><i class="material-icons">done</i></button>
+                                        <button id="btn_stop_sleep"  type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopSleep()" title="Stop"><i class="material-icons">clear</i></button>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+
+                                <div class="form-group">
+                                    <label for="wake_time" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Wake:</label>
+                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                        <input type="text" id="wake_time" class="form-control" onkeyup="karadio.upWake(event)" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
+                                        <button id="btn_start_wake" type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startWake()" title="Start"><i class="material-icons">done</i></button>
+                                        <button id="btn_stop_wake"  type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopWake()" title="Stop"><i class="material-icons">clear</i></button>
                                     </div>
                                 </div>
 
@@ -422,6 +424,8 @@
                                         <button type="button" id="print"   class="btn btn-raised btn-inverse theme" onClick="karadio.printStationList()" title="Print the list"><i class="material-icons">print</i></button>
                                     </div>
                                 </div>
+
+                                <div class="clearfix"></div>
 
                                 <div class="form-group">
                                     <table id="stations_table" class="table table-striped table-hover">
@@ -677,17 +681,6 @@
                                     </div>
                                 </div>
 
-                                <!--
-                                <div class="form-group togglebutton">
-                                    <label class="control-label c1 col-xs-2 col-sm-2 col-lg-2">
-                                        <input disabled type="checkbox" id="show-station-icon" onClick="" />
-                                    </label>
-                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <label for="show-station-icon" class="control-label trn">Show the station icon in the selection dropdown list.</label>
-                                    </div>
-                                </div>
-                                -->
-
                                 <div class="form-group">
                                     <label for="theme_select" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Theme color:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
@@ -726,7 +719,7 @@
 
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12">
-                                        <div id="version-container"></div> <!-- LOAD: http://karadio.karawin.fr/version.php -->
+                                        <div id="version_container"></div> <!-- LOAD: http://karadio.karawin.fr/version.php -->
                                         <p class="form-control-static trn">To update or reload the current release:</p>
                                     </div>
                                 </div>
@@ -749,7 +742,7 @@
             <div id="tab-about" role="tabpanel" class="tab-pane">
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="about-container"></div> <!-- LOAD: http://karadio.karawin.fr/history.php -->
+                        <div id="about_container"></div> <!-- LOAD: http://karadio.karawin.fr/about.php -->
                     </div>
                 </div>
             </div>

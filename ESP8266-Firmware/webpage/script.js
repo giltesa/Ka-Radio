@@ -2,12 +2,18 @@
  * Karadio Class for Web Control.
  *
  * Note:
- *   Nomenclature used for IDs, class CSS, cookies, and variables JS/PHP:
+ *
+ *   Nomenclature used for IDs, cookies, class CSS, and variables JS/PHP:
  *
  *     id      = "id_name"      (With the exception of some IDs with a short prefix, eg: lbitr instead of label_bitr)
+ *     cookies = "cookie_name"
  *     class   = "class-name"
- *     cookies = "cookie-name"
  *     var     = "variableName"
+ *
+ *   Visibility of the parameters and functions:
+ *
+ *     Private = var nameParamOrFunct
+ *     Public  = this.nameParamOrFunct
  *
  */
 function Karadio()
@@ -37,7 +43,7 @@ function Karadio()
 
 
 
-    // PUBLIC METHODS:
+    // PUBLIC/PRIVATE METHODS:
     this.begin = function()
     {
         loadVersionPage();
@@ -48,16 +54,15 @@ function Karadio()
 
         loadStationSelect();
         checkWebSocket();
-        refresh(); //REVISAR
         wifi(false);
         autoStart();
-        refresh(); //REVISAR
+        refresh();
         stationDetails();
     };
 
 
 
-    this.openWebSocket = function()
+    var openWebSocket = function()
     {
         webSocket = new WebSocket("ws://"+ (!debug ? karadioURL : karadioDebugURL) +"/");
         console.log("url:ws://"+ (!debug ? karadioURL : karadioDebugURL) +"/");
@@ -71,8 +76,6 @@ function Karadio()
 
                 if( arr["meta"] )
                     $('#playing').text(arr["meta"].replace(/\\/g,""));
-                else
-                    $('#playing').text("");
 
                 if( arr["wsvol"] )
                     onRangeVolChange(arr['wsvol'], false);
@@ -128,73 +131,7 @@ function Karadio()
 
 
 
-    this.wsPlayStation = function(stationNO)
-    {
-        $("#stations_select").val( (stationNO >= 0 && stationNO < maxStation) ? stationNO : 0 );
-    };
-
-
-
-    this.mPlay = function(url)
-    {
-        if( url != null )
-            mURL = url;
-        else if( !mPlaying )
-            mPlaying = !mPlaying;
-
-        if( mPlaying )
-        {
-            var monitor    = $("#monitor")[0];
-            monitor.src    = mURL.endsWith("/") ? mURL + ";" : mURL;
-            monitor.volume = getRange("#volm_range").get() / 100;
-
-            //ABORTED=1, NETWORK=2, DECODE=3, SRC_NOT_SUPPORTED=4
-            if( monitor.networkState > 0 )
-                return;
-
-            monitor.play();
-        }
-    };
-
-
-
-    this.mStop = function()
-    {
-        if( mPlaying )
-        {
-            mPlaying = !mPlaying;
-
-            var monitor = $("#monitor")[0];
-            monitor.src = "http://karadio.karawin.fr/silence-1sec.mp3";
-            monitor.pause();
-        }
-    };
-
-
-
-    var mPause = function()
-    {
-        if( mPlaying )
-            $("#monitor")[0].pause();
-    };
-
-
-
-    this.mVol = function($val)
-    {
-        $("#monitor")[0].volume = $val;
-    };
-
-
-
-    //It throws an error from the HTML, the function is not found but the code is correct.
-    //this.mError = function(){
-    //    console.log("monitor error1 " + $("#monitor")[0].error.code);
-    //};
-
-
-
-    this.checkWebSocket = function()
+    var checkWebSocket = function()
     {
         if( typeof webSocket == 'undefined' || webSocket.readyState == webSocket.CLOSED )
             openWebSocket();
@@ -205,161 +142,7 @@ function Karadio()
 
 
 
-    //THE COLOR VALIDATION IS NOW CHECKED BY BOOTSTRAP, THAT CAN BE DELETED: REVISAR
-    var checkIP = function($selector)
-    {
-        //$selector[0].style.color = /^([0-9]+\.){3}[0-9]+$/.test($selector.val()) ? "#009688" : "#f44336";
-    };
-
-
-
-    this.clickDHCP = function()
-    {
-        $('#ip, #mask, #gw').prop('disabled', $('#dhcp').is(":checked") );
-    }
-
-
-    this.dTime = function()
-    {
-        var $elt  = $("#sminutes");
-        var $eltw = $("#wminutes");
-
-        $("#time").text(new Date().toLocaleTimeString());
-
-        if( !isNaN($elt.text()) && $elt.text() != "0" )
-            $elt.text( $elt.text()-1 );
-
-        if( !isNaN($elt.text()) && $elt.text() == 0 )
-            $elt.text("0");
-
-        if( !isNaN($eltw.text()) && $eltw.text() != "0" )
-            $eltw.text( $eltw.text()-1 );
-
-        if( !isNaN($eltw.text()) && $eltw.text() == 0 )
-            $eltw.text("0");
-    };
-
-
-
-    this.upSleep = function(ev)
-    {
-        if( ev.keyCode == 13 )
-            startSleep();
-    };
-
-
-
-    this.startSleep = function()
-    {
-        var valm;
-        var cur = new Date();
-        var hop = $("#sleep_delay").val().split(":");
-        var h0  = parseInt(hop[0], 10);
-        var h1  = parseInt(hop[1], 10);
-
-        if( isNaN(h0) )
-            showToast("Error, try again");
-        else
-        {
-            if( isNaN(h1) )
-                valm = h0; // minute mode
-            else
-            {
-                // time mode
-                fut = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), h0, h1, 0);
-
-                if( fut.getTime() > cur.getTime() )
-                    valm = Math.round((fut.getTime() - cur.getTime()) / 60000); //seconds
-                else
-                    valm = 1440 - Math.round((cur.getTime() - fut.getTime()) / 60000); //seconds
-
-                if( valm == 0 ){
-                    valm = fut.getTime() > cur.getTime() ? 1 : 1440;
-                }
-            }
-
-            webSocket.send("startSleep=" + valm + "&");
-            showToast("Started, Good night!");
-        }
-    };
-
-
-
-    this.stopSleep = function()
-    {
-        webSocket.send("stopSleep");
-        $('#sminutes').text("0");
-    };
-
-
-
-    this.upWake = function(ev)
-    {
-        if( ev.keyCode == 13 )
-            startWake();
-    };
-
-
-
-    this.startWake = function()
-    {
-        var valm;
-        var cur = new Date();
-        var hop = $("#wake_delay").val().split(":");
-        var h0  = parseInt(hop[0], 10);
-        var h1  = parseInt(hop[1], 10);
-
-        if( isNaN(h0) )
-            showToast("Error, try again");
-        else
-        {
-            if( isNaN(h1) )
-                valm = h0; // minute mode
-            else
-            {
-                // time mode
-                fut = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), h0, h1, 0);
-
-                if( fut.getTime() > cur.getTime() )
-                    valm = Math.round((fut.getTime() - cur.getTime()) / 60000); //seconds
-                else
-                    valm = 1440 - Math.round((cur.getTime() - fut.getTime()) / 60000); //seconds
-
-                if( valm == 0 ){
-                    valm = fut.getTime() > cur.getTime() ? 1 : 1440;
-                }
-            }
-
-            webSocket.send("startWake=" + valm + "&");
-            showToast("Started");
-        }
-    };
-
-
-
-    this.stopWake = function()
-    {
-        webSocket.send("stopWake");
-        $('#wminutes').text("0");
-    };
-
-
-
-    this.stationDetails = function()
-    {
-        var isFull = $('#station_details').is(":checked");
-
-        Cookies.set("show_station_details", isFull, { expires: 365 });
-
-        if( !isFull )
-            $('#ldescr, #lgenre, #lnot1, #lbitr').addClass("hidden");
-        else
-            $('#ldescr, #lgenre, #lnot1, #lbitr').removeClass("hidden");
-    };
-
-
-
-    this.icyResp = function(arr)
+    var icyResp = function(arr)
     {
         var url, isFull = $('#station_details').is(":checked");
 
@@ -411,7 +194,7 @@ function Karadio()
 
 
 
-    this.soundResp = function(arr)
+    var soundResp = function(arr)
     {
         var $range;
 
@@ -438,6 +221,13 @@ function Karadio()
         $range = getRange("#vol1_range");
         $range.set(arr["vol"].replace(/\\/g, ""));
         onRangeVolChange(getRange("#vol1_range").get(), false);
+    };
+
+
+
+    var wsPlayStation = function(stationNO)
+    {
+        $("#stations_select").val( (stationNO >= 0 && stationNO < maxStation) ? stationNO : 0 );
     };
 
 
@@ -474,265 +264,7 @@ function Karadio()
 
 
 
-    this.resetEQ = function()
-    {
-        var $range;
-
-        $range = getRange("#treble_range");
-        $range.set(0);
-        onRangeChange($range, 1.5, false);
-
-        $range = getRange("#bass_range");
-        $range.set(0);
-        onRangeChange($range, 1, false);
-
-        $range = getRange("#treblefreq_range");
-        $range.set(1);
-        onRangeChangeFreqTreble($range, 1, false);
-
-        $range = getRange("#bassfreq_range");
-        $range.set(2);
-        onRangeChangeFreqBass($range, 10, false);
-
-        $range = getRange("#spacial_range");
-        $range.set(0);
-        onRangeChangeSpatial($range);
-    };
-
-
-
-    this.onRangeChange = function($range, multiplier, rotate, nosave)
-    {
-        var spanID = "#"+ $range.target["id"].replace("range","span");
-        var value  = parseInt($range.get());
-
-        if( rotate )
-            value = $range.options.range.max - value;
-
-        $(spanID).text((value * multiplier) + " dB");
-
-        if( typeof(nosave) == 'undefined' )
-            saveSoundSettings();
-    };
-
-
-
-    this.onRangeChangeFreqTreble = function($range, multiplier, rotate, nosave)
-    {
-        var spanID = "#"+ $range.target.id.replace("range","span");
-        var value  = parseInt($range.get());
-
-        if( rotate )
-            value = $range.options.range.max - value;
-
-        $(spanID).text(/*"From " +*/ (value * multiplier) + " kHz");
-
-        if( typeof(nosave) == 'undefined' )
-            saveSoundSettings();
-    };
-
-
-
-    this.onRangeChangeFreqBass = function($range, multiplier, rotate, nosave)
-    {
-        var spanID = "#"+ $range.target.id.replace("range","span");
-        var value  = parseInt($range.get());
-
-        if( rotate )
-            value = $range.options.range.max - value;
-
-        $(spanID).text(/*"Under " +*/ (value * multiplier) + " Hz");
-
-        if( typeof(nosave) == 'undefined' )
-            saveSoundSettings();
-    };
-
-
-
-    this.onRangeChangeSpatial = function($range, nosave)
-    {
-        var spanID = "#"+ $range.target.id.replace("range","span");
-        var value  = parseInt($range.get());
-        var label;
-
-        switch( value )
-        {
-            case 0: label = translator.get("Off");     break;
-            case 1: label = translator.get("Minimal"); break;
-            case 2: label = translator.get("Normal");  break;
-            case 3: label = translator.get("Maximal"); break;
-        }
-
-        $(spanID).text(label);
-
-        if( typeof(nosave) == 'undefined' )
-            saveSoundSettings();
-    };
-
-
-
-    var longValue = function(value)
-    {
-        //Log(128/(Midi Volume + 1)) * (-10) * (Max dB below 0/(-24.04))
-
-        var log = Number(value) + 1;
-        var val = Math.round((Math.log10(255 / log) * 105.54571334));
-
-        //console.log("Value= "+value+"   log de val="+log+" "+255/log +"  = "+Math.log10(255/log)  +"   new value= "+val );
-
-        return val;
-    };
-
-
-
-    this.onRangeVolChange = function(value, isLocal)
-    {
-        var longVal = longValue(value);
-
-        getRange("#vol1_range").set(value);
-        $('#vol1_span').text(parseInt(longVal * -0.5) + " dB");
-
-        getRange("#vol2_range").set(value);
-        $('#vol2_span').text(parseInt(longVal * -0.5) + " dB");
-
-
-        if( isLocal && webSocket.readyState == webSocket.OPEN )
-            webSocket.send("wsvol=" + value + "&");
-    };
-
-
-
-    this.wifi = function(valid)
-    {
-        if( valid )
-        {
-            var $toast = showToast("System reboot... Please Wait", 0);
-
-            window.setTimeout(function(){
-                $toast.snackbar("hide");
-                window.setTimeout(function(){
-                    window.location.href = "http://"+ $('#ip').val() +"/";
-                }, 2000);
-            }, 16000);
-        }
-
-        xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function()
-        {
-            if( xhr.readyState == 4 && xhr.status == 200 )
-            {
-                var arr = JSON.parse(xhr.responseText);
-
-                $('#ssid').val(arr["ssid"]);
-                $('#passwd').val(arr["pasw"]);
-                $('#ssid2').val(arr["ssid2"]);
-                $('#passwd2').val(arr["pasw2"]);
-
-                $('#mac').val(arr["mac"]);
-                $('#dhcp').prop('checked', arr["dhcp"] == "1" );
-
-                $('#ip').val(arr["ip"]);
-                checkIP( $('#ip') );
-
-                $('#mask').val(arr["msk"]);
-                checkIP( $('#mask') );
-
-                $('#gw').val(arr["gw"]);
-                checkIP( $('#gw') );
-
-                $('#ip, #mask, #gw').prop('disabled', $('#dhcp').is(":checked") );
-
-                $('#ua').val(arr["ua"]);
-            }
-        }
-        xhr.open("POST", (!debug ? "wifi" : "http://"+karadioDebugURL+"/wifi"), false);
-        xhr.setRequestHeader(content, ctype);
-        xhr.send(
-            "valid="  + (valid ? 1 : 0) +
-            "&ssid="  + encodeURIComponent($('#ssid').val()) +
-            "&pasw="  + encodeURIComponent($('#passwd').val()) +
-            "&ssid2=" + encodeURIComponent($('#ssid2').val()) +
-            "&pasw2=" + encodeURIComponent($('#passwd2').val()) +
-            "&ip="    + $('#ip').val() +
-            "&msk="   + $('#mask').val() +
-            "&gw="    + $('#gw').val() +
-            "&ua="    + encodeURIComponent($('#ua').val()) +
-            "&dhcp="  + $('#dhcp').is(":checked") + "&"
-        );
-    };
-
-
-
-    this.instantPlay = function()
-    {
-        var curl;
-        try
-        {
-            xhr = new XMLHttpRequest();
-            xhr.open("POST", (!debug ? "instant_play" : "http://"+karadioDebugURL+"/instant_play"), false);
-            xhr.setRequestHeader(content, ctype);
-            curl = $('#instant_path').val();
-
-            if( !(curl.substring(0, 1) === "/") )
-                curl = "/" + curl;
-
-            $('#instant_url').val( $('#instant_url').val().replace(/^https?:\/\//, '') );
-
-            curl = fixedEncodeURIComponent(curl);
-            xhr.send("url=" + $('#instant_url').val() + "&port=" + $('#instant_port').val() + "&path=" + curl + "&");
-        }
-        catch(ex){
-            console.log("error" + ex);
-        }
-    };
-
-
-
-    this.prevStation = function()
-    {
-        var $select = $("#stations_select");
-        var id      = $select.find(":selected").val();
-
-        if( id > 0 )
-        {
-            $select.selectpicker('val', --id);
-            Select();
-        }
-    };
-
-
-
-    this.nextStation = function()
-    {
-        var $select = $("#stations_select");
-        var id      = $select.find(":selected").val();
-        var length  = $select.find('option').length;
-
-        if( id < length - 1 )
-        {
-            $select.selectpicker('val', ++id);
-            Select();
-        }
-    };
-
-
-
-    this.autoPlay = function()
-    {
-        try
-        {
-            xhr.open("POST", (!debug ? "auto" : "http://"+karadioDebugURL+"/auto"), false);
-            xhr.setRequestHeader(content, ctype);
-            xhr.send("id="+ $('#aplay').is(":checked") +"&");
-        }
-        catch(ex){
-            console.log("error" + ex);
-        }
-    };
-
-
-
-    this.autoStart = function()
+    var autoStart = function()
     {
         xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function ()
@@ -756,7 +288,22 @@ function Karadio()
 
 
 
-    this.Select = function()
+    this.autoPlay = function()
+    {
+        try
+        {
+            xhr.open("POST", (!debug ? "auto" : "http://"+karadioDebugURL+"/auto"), false);
+            xhr.setRequestHeader(content, ctype);
+            xhr.send("id="+ $('#aplay').is(":checked") +"&");
+        }
+        catch(ex){
+            console.log("error" + ex);
+        }
+    };
+
+
+
+    this.selectStation = function()
     {
         if( $('#aplay').is(":checked") )
             playStation();
@@ -813,126 +360,280 @@ function Karadio()
 
 
 
-    this.saveSoundSettings = function()
+
+    this.prevStation = function()
     {
-        xhr = new XMLHttpRequest();
-        xhr.open("POST", (!debug ? "sound" : "http://"+karadioDebugURL+"/sound"), false);
-        xhr.setRequestHeader(content, ctype);
-        xhr.send(
-            "&bass="         + parseInt(getRange("#bass_range").get())
-            + "&treble="     + parseInt(getRange("#treble_range").get())
-            + "&bassfreq="   + parseInt(getRange("#bassfreq_range").get())
-            + "&treblefreq=" + parseInt(getRange("#treblefreq_range").get())
-            + "&spacial="    + parseInt(getRange("#spacial_range").get())
-            + "&"
-        );
+        var $select = $("#stations_select");
+        var id      = $select.find(":selected").val();
+
+        if( id > 0 )
+        {
+            $select.selectpicker('val', --id);
+            selectStation();
+        }
     };
 
 
 
-    this.fixedEncodeURIComponent = function(str)
+    this.nextStation = function()
     {
-        return str.replace(/[&]/g, function(c){
-            return '%' + c.charCodeAt(0).toString(16);
-        });
+        var $select = $("#stations_select");
+        var id      = $select.find(":selected").val();
+        var length  = $select.find('option').length;
+
+        if( id < length - 1 )
+        {
+            $select.selectpicker('val', ++id);
+            selectStation();
+        }
     };
 
 
 
-    this.saveStation = function()
+    this.stationDetails = function()
     {
-        var
-            slot = $('#edit_slot').text(),
-            name = $('#edit_name').val(),
-            url  = $('#edit_url' ).val().replace(/^https?:\/\//, ''),
-            file = $('#edit_path').val(),
-            port = $('#edit_port').val(),
-            ovol = parseInt(getRange("#edit_ovol").get()),
-            jfile;
+        var isFull = $('#station_details').is(":checked");
 
-        if( !(file.substring(0, 1) === "/") )
-            file = "/" + file;
+        Cookies.set("show_station_details", isFull, { expires: 365 });
 
-        jfile = fixedEncodeURIComponent(file);
+        if( !isFull )
+            $('#ldescr, #lgenre, #lnot1, #lbitr').addClass("hidden");
+        else
+            $('#ldescr, #lgenre, #lnot1, #lbitr').removeClass("hidden");
+    };
 
-        console.log("Path: " + file);
-        console.log("JSON: " + jfile);
 
+
+    this.mPlay = function(url)
+    {
+        if( url != null )
+            mURL = url;
+        else if( !mPlaying )
+            mPlaying = !mPlaying;
+
+        if( mPlaying )
+        {
+            var monitor    = $("#monitor")[0];
+            monitor.src    = mURL.endsWith("/") ? mURL + ";" : mURL;
+            monitor.volume = getRange("#volm_range").get() / 100;
+            monitor.play();
+        }
+    };
+
+
+
+    this.mStop = function()
+    {
+        if( mPlaying )
+        {
+            mPlaying = !mPlaying;
+
+            var monitor = $("#monitor")[0];
+            monitor.src = "http://karadio.karawin.fr/silence-1sec.mp3";
+            monitor.pause();
+        }
+    };
+
+
+
+    var mPause = function()
+    {
+        if( mPlaying )
+            $("#monitor")[0].pause();
+    };
+
+
+
+    this.mVol = function($val)
+    {
+        $("#monitor")[0].volume = $val;
+    };
+
+
+
+    //It throws an error from the HTML, the function is not found but the code is correct.
+    //this.mError = function(){
+    //    console.log("monitor error1 " + $("#monitor")[0].error.code);
+    //};
+
+
+
+    var dTime = function()
+    {
+        var $elt  = $("#sleep_time");
+        var $eltw = $("#wake_time");
+
+        $("#time").text(new Date().toLocaleTimeString());
+
+
+        if( $elt.is(':disabled') && !isNaN($elt.val()) )
+        {
+            if( $elt.val() > 0 )
+            {
+                $elt.val( $elt.val()-1 );
+            }
+            else if( $elt.val() == 0 )
+            {
+                $elt.val("");
+                $("#btn_start_sleep, #sleep_time").prop('disabled', false);
+            }
+        }
+
+        if( $eltw.is(':disabled') && !isNaN($eltw.val()) )
+        {
+            if( $eltw.val() > 0 )
+            {
+                $eltw.val( $eltw.val()-1 );
+            }
+            else if( $eltw.val() == 0 )
+            {
+                $eltw.val("");
+                $("#btn_start_wake, #wake_time").prop('disabled', false);
+            }
+        }
+    };
+
+
+
+    this.upSleep = function(ev)
+    {
+        if( ev.keyCode == 13 )
+            startSleep();
+    };
+
+
+
+    this.startSleep = function()
+    {
+        var valm;
+        var cur = new Date();
+        var hop = $("#sleep_time").val().split(":");
+        var h0  = parseInt(hop[0], 10);
+        var h1  = parseInt(hop[1], 10);
+
+        if( isNaN(h0) )
+            showToast("Error, try again");
+        else
+        {
+            if( isNaN(h1) )
+                valm = h0; // minute mode
+            else
+            {
+                // time mode
+                fut = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), h0, h1, 0);
+
+                if( fut.getTime() > cur.getTime() )
+                    valm = Math.round((fut.getTime() - cur.getTime()) / 60000); //seconds
+                else
+                    valm = 1440 - Math.round((cur.getTime() - fut.getTime()) / 60000); //seconds
+
+                if( valm == 0 ){
+                    valm = fut.getTime() > cur.getTime() ? 1 : 1440;
+                }
+            }
+
+            webSocket.send("startSleep=" + valm + "&");
+
+            window.setTimeout(function(label){
+                $('#sleep_time').val(label);
+                $("#btn_start_sleep, #sleep_time").prop('disabled', true);
+            }, 2000, (valm*60)-2);
+
+            showToast("Started, Good night!");
+        }
+    };
+
+
+
+    this.stopSleep = function()
+    {
+        webSocket.send("stopSleep");
+        $("#sleep_time").val("");
+        $("#btn_start_sleep, #sleep_time").prop('disabled', false);
+    };
+
+
+
+    this.upWake = function(ev)
+    {
+        if( ev.keyCode == 13 )
+            startWake();
+    };
+
+
+
+    this.startWake = function()
+    {
+        var valm;
+        var cur = new Date();
+        var hop = $("#wake_time").val().split(":");
+        var h0  = parseInt(hop[0], 10);
+        var h1  = parseInt(hop[1], 10);
+
+        if( isNaN(h0) )
+            showToast("Error, try again");
+        else
+        {
+            if( isNaN(h1) )
+                valm = h0; // minute mode
+            else
+            {
+                // time mode
+                fut = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), h0, h1, 0);
+
+                if( fut.getTime() > cur.getTime() )
+                    valm = Math.round((fut.getTime() - cur.getTime()) / 60000); //seconds
+                else
+                    valm = 1440 - Math.round((cur.getTime() - fut.getTime()) / 60000); //seconds
+
+                if( valm == 0 ){
+                    valm = fut.getTime() > cur.getTime() ? 1 : 1440;
+                }
+            }
+
+            webSocket.send("startWake=" + valm + "&");
+
+
+            window.setTimeout(function(label){
+                $('#wake_time').val(label);
+                $("#btn_start_wake, #wake_time").prop('disabled', true);
+            }, 2000, (valm*60)-2);
+
+            showToast("Started");
+        }
+    };
+
+
+
+    this.stopWake = function()
+    {
+        webSocket.send("stopWake");
+        $("#wake_time").val("");
+        $("#btn_start_wake, #wake_time").prop('disabled', false);
+    };
+
+
+
+    this.instantPlay = function()
+    {
+        var curl;
         try
         {
             xhr = new XMLHttpRequest();
-            xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
+            xhr.open("POST", (!debug ? "instant_play" : "http://"+karadioDebugURL+"/instant_play"), false);
             xhr.setRequestHeader(content, ctype);
-            xhr.send("nb="+ 1 +"&id="+ slot +"&url="+ url +"&name="+ name +"&file="+ jfile +"&ovol="+ ovol +"&port="+ port +"&&");
-            localStorage.setItem(slot, "{\"Name\":\""+ name +"\",\"URL\":\""+ url +"\",\"File\":\""+ file +"\",\"Port\":\""+ port +"\",\"ovol\":\""+ ovol +"\"}");
+            curl = $('#instant_path').val();
+
+            if( !(curl.substring(0, 1) === "/") )
+                curl = "/" + curl;
+
+            $('#instant_url').val( $('#instant_url').val().replace(/^https?:\/\//, '') );
+
+            curl = fixedEncodeURIComponent(curl);
+            xhr.send("url=" + $('#instant_url').val() + "&port=" + $('#instant_port').val() + "&path=" + curl + "&");
         }
         catch(ex){
-            console.log("error save " + ex);
-        }
-
-        loadStationSelect();
-        loadStationTable();
-    };
-
-
-
-    this.editStation = function(id)
-    {
-        var arr;
-
-        function cpedit(arr)
-        {
-            $('#edit_url').val(arr["URL"]);
-            $('#edit_name').val(arr["Name"]);
-            $('#edit_path').val(arr["File"]);
-
-            if( arr["Port"] == "0" )
-                arr["Port"] = "80";
-
-            $('#edit_port').val(arr["Port"]);
-
-            if( arr["URL"] )
-                $('#edit_furl').val("http://"+ arr["URL"] +":"+ arr["Port"] + arr["File"]);
-            else
-                $('#edit_furl').val("");
-
-            getRange("#edit_ovol").set(arr["ovol"]);
-        }
-
-        $('#edit_slot').text(id);
-        idstr = id.toString();
-
-        if( localStorage.getItem(idstr) != null )
-        {
-            try
-            {
-                arr = JSON.parse(localStorage.getItem(idstr));
-            }
-            catch(ex){
-                console.log("error" + ex);
-            }
-            cpedit(arr);
-        }
-        else
-        {
-            xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function ()
-            {
-                if( xhr.readyState == 4 && xhr.status == 200 )
-                {
-                    try
-                    {
-                        arr = JSON.parse(xhr.responseText);
-                    }
-                    catch(ex){
-                        console.log("error" + ex);
-                    }
-                    cpedit(arr);
-                }
-            }
-            xhr.open("POST", (!debug ? "getStation" : "http://"+karadioDebugURL+"/getStation"), false);
-            xhr.setRequestHeader(content, ctype);
-            xhr.send("idgp=" + id + "&");
+            console.log("error" + ex);
         }
     };
 
@@ -958,340 +659,72 @@ function Karadio()
 
 
 
-    this.clearStations = function()
+    var loadStationSelect = function()
     {
-        var
-            t1 = translator.get("Warning: This will clear all stations."),
-            t2 = translator.get("Be sure to save station before."),
-            t3 = translator.get("Clear now?");
+        var $select, $options=[], id=0;
 
-        if( !confirm(t1 +"\n"+ t2 +"\n\n"+ t3) )
-            refresh();
-        else
+        $select = $("#stations_select");
+        $select.empty();
+
+        showToast("Working... Please Wait");
+
+        function addStation(id, arr)
         {
-            xhr = new XMLHttpRequest();
-            xhr.open("POST", (!debug ? "clear" : "http://"+karadioDebugURL+"/clear"), false);
-            xhr.setRequestHeader(content, ctype);
-            xhr.send();
-            refreshStations();
+            if( arr["Name"].length > 0 )
+                $options.push( $('<option/>').attr({ 'value': id }).text(id +": "+ arr["Name"]) );
         }
-    };
 
-
-
-    this.upgradeFirmware = function()
-    {
-        if( webSocket.readyState == webSocket.OPEN )
+        while( id < maxStation )
         {
-            var $toast = showToast("Updating the firmware, the page will refresh when finished, please wait...", 0);
+            idstr = id.toString();
 
-            webSocket.send("upgrade");
-
-            window.setTimeout(function(){
-                $toast.snackbar("hide");
-                window.setTimeout(function(){
-                    window.location.reload(true);
-                }, 2000);
-            }, 30000);
-        }
-    };
-
-
-    /**
-     *
-     */
-    this.loadAboutPage = function()
-    {
-        loadExtPage( $("#about-container"), aboutURL );
-        translator.lang(Cookies.get("language"));
-
-        $("#yours-button").one("click", function(ev)
-        {
-            loadExtPage( $("#yours_dialog").find(".modal-body"), yoursURL );
-            translator.lang(Cookies.get("language"));
-            setTheme();
-        });
-    };
-
-
-    /**
-     *
-     */
-    this.loadVersionPage = function()
-    {
-        loadExtPage( $("#version-container"), versionURL );
-        translator.lang(Cookies.get("language"));
-
-        var last      = $("#firmware_last").text().split('.').join('');
-        var installed = $("#firmware_installed").text().split('.').join('');
-
-        if( parseInt(installed) < parseInt(last) )
-        {
-            $("#firmware_last").parent().addClass('label-danger').removeClass('label-success');
-
-            if( Cookies.get("show_toast_updates") === "true" && !Cookies.get("hide_toast_firmware_"+last) )
+            if( localStorage.getItem(idstr) != null )
             {
-                var text = translator.get("New firmware %1 available!").replace("%1", $("#firmware_last").text());
-                var htmlContent =
-                '<div class="row">'+
-                    '<div class="pull-left"><i class="material-icons">memory</i> ' + text + '</div>'+
-                    '<div class="text-right"><i class="material-icons">clear</i></div>'+
-                '</div>';
-
-                window.setTimeout(function(){
-                    $.snackbar({
-                        content     : htmlContent,
-                        style       : "deeppurple",
-                        timeout     : 0,
-                        htmlAllowed : true,
-                        onClose     : function(){
-                            Cookies.set("hide_toast_firmware_"+last, true, { expires: 7 });
-                        }
-                    });
-                }, 2000);
-            }
-        }
-    };
-
-
-
-    this.backupStations = function()
-    {
-        var fileName, output='', textFileAsBlob, downloadLink;
-
-
-        fileName = $('#backup-name').val();
-
-        if( fileName == "" )
-            fileName = "WebStations.txt";
-
-        for( var i=0; i < maxStation; i++ )
-            output += localStorage[i] + '\n';
-
-        textFileAsBlob = new Blob([output], { type: 'text/plain' }), downloadLink = document.createElement("a");
-        downloadLink.style.display = "none";
-        downloadLink.setAttribute("download", fileName);
-        document.body.appendChild(downloadLink);
-
-        if( window.navigator.msSaveOrOpenBlob ){
-            downloadLink.addEventListener("click", function(){
-                window.navigator.msSaveBlob(textFileAsBlob, fileName);
-            });
-        }
-        else if( 'URL' in window ){
-            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-        }else{
-            downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-        }
-
-        downloadLink.click();
-    };
-
-
-
-    this.restoreStations = function()
-    {
-        var i, indmax, tosend, reader, lines, line, file;
-
-        if( window.File && window.FileReader && window.FileList && window.Blob )
-        {
-            reader = new FileReader();
-            xhr    = new XMLHttpRequest();
-
-            xhr.onreadystatechange = function ()
-            {
-                showToast("Working... Please Wait");
-            }
-            reader.onload = function (e)
-            {
-                function fillInfo(ind, arri)
-                {
-                    if (!arri["ovol"])
-                        arri["ovol"] = "0";
-
-                    tosend += "&id=" + ind + "&url=" + arri["URL"] + "&name=" + arri["Name"] + "&file=" + arri["File"] + "&port=" + arri["Port"] + "&ovol=" + arri["ovol"] + "&";
-                    localStorage.setItem(ind, "{\"Name\":\"" + arri["Name"] + "\",\"URL\":\"" + arri["URL"] + "\",\"File\":\"" + arri["File"] + "\",\"Port\":\"" + arri["Port"] + "\",\"ovol\":\"" + arri["ovol"] + "\"}");
-                }
-                // Entire file
-                //console.log(this.result);
-                // By lines
-                lines = this.result.split('\n');
-                localStorage.clear();
-                indmax = 3;
-                line = 0;
                 try
                 {
-                    tosend = "nb=" + indmax;
-
-                    for( i=0 ; i < indmax ; i++ ){
-                        fillInfo(i, JSON.parse(lines[i]));
-                    }
-
-                    xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
-                    xhr.setRequestHeader(content, ctype);
-                    console.log("post " + tosend);
-                    xhr.send(tosend);
+                    addStation(id, JSON.parse(localStorage.getItem(idstr)) );
+                    id++;
                 }
                 catch(ex){
-                    console.log("error " + ex);
+                    console.log("error" + ex);
                 }
-
-                for( line=indmax; line < lines.length ; line += (indmax-1) )
-                {
-                    //console.log(lines[line]);
-                    try
-                    {
-                        tosend = "nb=" + indmax;
-
-                        for( i=0 ; i < indmax ; i++ ){
-                            fillInfo(line + i, JSON.parse(lines[line + i]));
-                        }
-
-                        xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
-                        xhr.setRequestHeader(content, ctype);
-                        xhr.send(tosend);
-                    }
-                    catch(ex){
-                        console.log("error " + ex);
-                    }
-                }
-                loadStationSelect();
-            };
-
-            file = $('#restore-file')[0].files[0];
-
-            if( file == null )
-                showToast("Please select a file");
+            }
             else
             {
-                showToast("Working... Please Wait");
-                reader.readAsText(file);
-
-                var asd = 656;
-            }
-        }
-    };
-
-
-
-    /*this.dragStart = function(ev)
-    {
-        //ev.dataTransfer.setData("Text", ev.target.id);
-    };*/
-
-
-
-    var moveNodes = function(a, b)
-    {
-        var pa1 = a.parentNode, sib = b.nextSibling, txt;
-
-        if( sib === a )
-            sib = sib.nextSibling;
-
-        pa1.insertBefore(a, b);
-
-        for( txt=0 ; txt < maxStation ; txt++ )
-        {
-            pa1.rows[txt].cells[0].innerText = txt.toString();
-            pa1.rows[txt].cells[6].innerHTML = b.parentNode.rows[txt].cells[6].innerHTML;
-        }
-
-        $("#stsave").prop("disabled", false);
-        stchanged = true;
-    };
-
-
-
-    /*dragDrop = function(ev)
-    {
-        ev.preventDefault();
-        var TRStart = document.getElementById(ev.dataTransfer.getData("text"));
-        var TRDrop = document.getElementById(ev.currentTarget.id);
-        moveNodes(TRStart, TRDrop);
-    };*/
-
-
-
-    /*allowDrop = function(ev)
-    {
-        ev.preventDefault();
-    };*/
-
-
-
-    this.stChanged = function()
-    {
-        if( !stchanged )
-            return;
-
-        var $toast, i, indmax, tosend, index, tbody;
-
-        function fillInfo(ind)
-        {
-            id      = tbody.rows[ind].cells[0].innerText;
-            name    = tbody.rows[ind].cells[1].innerText;
-            url     = tbody.rows[ind].cells[2].innerText;
-            file    = tbody.rows[ind].cells[3].innerText;
-            port    = tbody.rows[ind].cells[4].innerText;
-            ovol    = tbody.rows[ind].cells[5].innerText;
-            localStorage.setItem(id, "{\"Name\":\"" + name + "\",\"URL\":\"" + url + "\",\"File\":\"" + file + "\",\"Port\":\"" + port + "\",\"ovol\":\"" + ovol + "\"}");
-            tosend = tosend + "&id=" + id + "&url=" + url + "&name=" + name + "&file=" + file + "&port=" + port + "&ovol=" + ovol + "&";
-        }
-
-        if( stchanged && confirm(translator.get("The list is modified. Do you want to save the modified list?")) )
-        {
-            $toast = showToast("Working... Please Wait", 0);
-            tbody  = $("#stations_table").find('tbody')[0];
-
-            xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function(){}
-
-            localStorage.clear();
-            indmax = 7;
-            index  = 0;
-
-            try
-            {
-                tosend = "nb=" + indmax;
-
-                for( i=0 ; i < indmax ; i++ )
-                    fillInfo(index + i);
-
-                xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
-                xhr.setRequestHeader(content, ctype);
-                xhr.send(tosend);
-            }
-            catch(ex){
-                console.log("error " + ex);
-            }
-
-
-            for( index=indmax ; index < maxStation ; index += (indmax+1) )
-            {
                 try
                 {
-                    tosend = "nb=" + indmax;
-
-                    for( i=0 ; i < indmax ; i++ )
-                        fillInfo(index + i);
-
-                    xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
+                    xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function()
+                    {
+                        if( xhr.readyState == 4 && xhr.status == 200 )
+                        {
+                            try
+                            {
+                                localStorage.setItem(idstr, xhr.responseText);
+                                addStation(id, JSON.parse(xhr.responseText) );
+                                id++;
+                            }
+                            catch(ex){
+                                console.log("error" + ex);
+                            }
+                        }
+                    }
+                    xhr.open("POST", (!debug ? "getStation" : "http://"+karadioDebugURL+"/getStation"), false);
                     xhr.setRequestHeader(content, ctype);
-                    xhr.send(tosend);
+                    xhr.send("idgp=" + id + "&");
                 }
                 catch(ex){
-                    console.log("error " + ex);
+                    console.log("error" + ex);
+                    //id--; //CAN BE DELETED
                 }
             }
-
-            $toast.snackbar("hide");
-            loadStationSelect();
         }
 
-        $("#stsave").prop("disabled", true);
-        stchanged = false;
-
         refresh();
+
+        $select.append($options);
+        $select.val( parseInt(localStorage.getItem('selindexstore')) );
+        $select.selectpicker('refresh');
     };
 
 
@@ -1395,72 +828,199 @@ function Karadio()
 
 
 
-    var loadStationSelect = function()
+    this.stChanged = function()
     {
-        var $select, $options=[], id=0;
+        if( !stchanged )
+            return;
 
-        $select = $("#stations_select");
-        $select.empty();
+        var $toast, i, indmax, tosend, index, tbody;
 
-        showToast("Working... Please Wait");
-
-        function addStation(id, arr)
+        function fillInfo(ind)
         {
-            if( arr["Name"].length > 0 )
-                $options.push( $('<option/>').attr({ 'value': id }).text(id +": "+ arr["Name"]) );
+            id      = tbody.rows[ind].cells[0].innerText;
+            name    = tbody.rows[ind].cells[1].innerText;
+            url     = tbody.rows[ind].cells[2].innerText;
+            file    = tbody.rows[ind].cells[3].innerText;
+            port    = tbody.rows[ind].cells[4].innerText;
+            ovol    = tbody.rows[ind].cells[5].innerText;
+            localStorage.setItem(id, "{\"Name\":\"" + name + "\",\"URL\":\"" + url + "\",\"File\":\"" + file + "\",\"Port\":\"" + port + "\",\"ovol\":\"" + ovol + "\"}");
+            tosend = tosend + "&id=" + id + "&url=" + url + "&name=" + name + "&file=" + file + "&port=" + port + "&ovol=" + ovol + "&";
         }
 
-        while( id < maxStation )
+        if( stchanged && confirm(translator.get("The list is modified. Do you want to save the modified list?")) )
         {
-            idstr = id.toString();
+            $toast = showToast("Working... Please Wait", 0);
+            tbody  = $("#stations_table").find('tbody')[0];
 
-            if( localStorage.getItem(idstr) != null )
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function(){}
+
+            localStorage.clear();
+            indmax = 7;
+            index  = 0;
+
+            try
             {
-                try
-                {
-                    addStation(id, JSON.parse(localStorage.getItem(idstr)) );
-                    id++;
-                }
-                catch(ex){
-                    console.log("error" + ex);
-                }
+                tosend = "nb=" + indmax;
+
+                for( i=0 ; i < indmax ; i++ )
+                    fillInfo(index + i);
+
+                xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
+                xhr.setRequestHeader(content, ctype);
+                xhr.send(tosend);
             }
-            else
+            catch(ex){
+                console.log("error " + ex);
+            }
+
+
+            for( index=indmax ; index < maxStation ; index += (indmax+1) )
             {
                 try
                 {
-                    xhr = new XMLHttpRequest();
-                    xhr.onreadystatechange = function()
-                    {
-                        if( xhr.readyState == 4 && xhr.status == 200 )
-                        {
-                            try
-                            {
-                                localStorage.setItem(idstr, xhr.responseText);
-                                addStation(id, JSON.parse(xhr.responseText) );
-                                id++;
-                            }
-                            catch(ex){
-                                console.log("error" + ex);
-                            }
-                        }
-                    }
-                    xhr.open("POST", (!debug ? "getStation" : "http://"+karadioDebugURL+"/getStation"), false);
+                    tosend = "nb=" + indmax;
+
+                    for( i=0 ; i < indmax ; i++ )
+                        fillInfo(index + i);
+
+                    xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
                     xhr.setRequestHeader(content, ctype);
-                    xhr.send("idgp=" + id + "&");
+                    xhr.send(tosend);
                 }
                 catch(ex){
-                    console.log("error" + ex);
-                    //id--; //CAN BE DELETED
+                    console.log("error " + ex);
                 }
             }
+
+            $toast.snackbar("hide");
+            loadStationSelect();
         }
+
+        $("#stsave").prop("disabled", true);
+        stchanged = false;
 
         refresh();
+    };
 
-        $select.append($options);
-        $select.val( parseInt(localStorage.getItem('selindexstore')) );
-        $select.selectpicker('refresh');
+
+
+    this.editStation = function(id)
+    {
+        var arr;
+
+        function cpedit(arr)
+        {
+            $('#edit_url').val(arr["URL"]);
+            $('#edit_name').val(arr["Name"]);
+            $('#edit_path').val(arr["File"]);
+
+            if( arr["Port"] == "0" )
+                arr["Port"] = "80";
+
+            $('#edit_port').val(arr["Port"]);
+
+            if( arr["URL"] )
+                $('#edit_furl').val("http://"+ arr["URL"] +":"+ arr["Port"] + arr["File"]);
+            else
+                $('#edit_furl').val("");
+
+            getRange("#edit_ovol").set(arr["ovol"]);
+        }
+
+        $('#edit_slot').text(id);
+        idstr = id.toString();
+
+        if( localStorage.getItem(idstr) != null )
+        {
+            try
+            {
+                arr = JSON.parse(localStorage.getItem(idstr));
+            }
+            catch(ex){
+                console.log("error" + ex);
+            }
+            cpedit(arr);
+        }
+        else
+        {
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function ()
+            {
+                if( xhr.readyState == 4 && xhr.status == 200 )
+                {
+                    try
+                    {
+                        arr = JSON.parse(xhr.responseText);
+                    }
+                    catch(ex){
+                        console.log("error" + ex);
+                    }
+                    cpedit(arr);
+                }
+            }
+            xhr.open("POST", (!debug ? "getStation" : "http://"+karadioDebugURL+"/getStation"), false);
+            xhr.setRequestHeader(content, ctype);
+            xhr.send("idgp=" + id + "&");
+        }
+    };
+
+
+
+    this.saveStation = function()
+    {
+        var
+            slot = $('#edit_slot').text(),
+            name = $('#edit_name').val(),
+            url  = $('#edit_url' ).val().replace(/^https?:\/\//, ''),
+            file = $('#edit_path').val(),
+            port = $('#edit_port').val(),
+            ovol = parseInt(getRange("#edit_ovol").get()),
+            jfile;
+
+        if( !(file.substring(0, 1) === "/") )
+            file = "/" + file;
+
+        jfile = fixedEncodeURIComponent(file);
+
+        console.log("Path: " + file);
+        console.log("JSON: " + jfile);
+
+        try
+        {
+            xhr = new XMLHttpRequest();
+            xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
+            xhr.setRequestHeader(content, ctype);
+            xhr.send("nb="+ 1 +"&id="+ slot +"&url="+ url +"&name="+ name +"&file="+ jfile +"&ovol="+ ovol +"&port="+ port +"&&");
+            localStorage.setItem(slot, "{\"Name\":\""+ name +"\",\"URL\":\""+ url +"\",\"File\":\""+ file +"\",\"Port\":\""+ port +"\",\"ovol\":\""+ ovol +"\"}");
+        }
+        catch(ex){
+            console.log("error save " + ex);
+        }
+
+        loadStationSelect();
+        loadStationTable();
+    };
+
+
+
+    this.clearStations = function()
+    {
+        var
+            t1 = translator.get("Warning: This will clear all stations."),
+            t2 = translator.get("Be sure to save station before."),
+            t3 = translator.get("Clear now?");
+
+        if( !confirm(t1 +"\n"+ t2 +"\n\n"+ t3) )
+            refresh();
+        else
+        {
+            xhr = new XMLHttpRequest();
+            xhr.open("POST", (!debug ? "clear" : "http://"+karadioDebugURL+"/clear"), false);
+            xhr.setRequestHeader(content, ctype);
+            xhr.send();
+            refreshStations();
+        }
     };
 
 
@@ -1491,6 +1051,417 @@ function Karadio()
 
 
 
+    /*this.dragStart = function(ev)
+    {
+        //ev.dataTransfer.setData("Text", ev.target.id);
+    };*/
+
+
+
+    var moveNodes = function(a, b)
+    {
+        var pa1 = a.parentNode, sib = b.nextSibling, txt;
+
+        if( sib === a )
+            sib = sib.nextSibling;
+
+        pa1.insertBefore(a, b);
+
+        for( txt=0 ; txt < maxStation ; txt++ )
+        {
+            pa1.rows[txt].cells[0].innerText = txt.toString();
+            pa1.rows[txt].cells[6].innerHTML = b.parentNode.rows[txt].cells[6].innerHTML;
+        }
+
+        $("#stsave").prop("disabled", false);
+        stchanged = true;
+    };
+
+
+
+    /*dragDrop = function(ev)
+    {
+        ev.preventDefault();
+        var TRStart = document.getElementById(ev.dataTransfer.getData("text"));
+        var TRDrop = document.getElementById(ev.currentTarget.id);
+        moveNodes(TRStart, TRDrop);
+    };*/
+
+
+
+    /*allowDrop = function(ev)
+    {
+        ev.preventDefault();
+    };*/
+
+
+
+    this.resetEQ = function()
+    {
+        var $range;
+
+        $range = getRange("#treble_range");
+        $range.set(0);
+        onRangeChange($range, 1.5, false);
+
+        $range = getRange("#bass_range");
+        $range.set(0);
+        onRangeChange($range, 1, false);
+
+        $range = getRange("#treblefreq_range");
+        $range.set(1);
+        onRangeChangeFreqTreble($range, 1, false);
+
+        $range = getRange("#bassfreq_range");
+        $range.set(2);
+        onRangeChangeFreqBass($range, 10, false);
+
+        $range = getRange("#spacial_range");
+        $range.set(0);
+        onRangeChangeSpatial($range);
+    };
+
+
+
+    this.onRangeChange = function($range, multiplier, rotate, nosave)
+    {
+        var spanID = "#"+ $range.target["id"].replace("range","span");
+        var value  = parseInt($range.get());
+
+        if( rotate )
+            value = $range.options.range.max - value;
+
+        $(spanID).text((value * multiplier) + " dB");
+
+        if( typeof(nosave) == 'undefined' )
+            saveSoundSettings();
+    };
+
+
+
+    this.onRangeChangeFreqTreble = function($range, multiplier, rotate, nosave)
+    {
+        var spanID = "#"+ $range.target.id.replace("range","span");
+        var value  = parseInt($range.get());
+
+        if( rotate )
+            value = $range.options.range.max - value;
+
+        $(spanID).text(/*"From " +*/ (value * multiplier) + " kHz");
+
+        if( typeof(nosave) == 'undefined' )
+            saveSoundSettings();
+    };
+
+
+
+    this.onRangeChangeFreqBass = function($range, multiplier, rotate, nosave)
+    {
+        var spanID = "#"+ $range.target.id.replace("range","span");
+        var value  = parseInt($range.get());
+
+        if( rotate )
+            value = $range.options.range.max - value;
+
+        $(spanID).text(/*"Under " +*/ (value * multiplier) + " Hz");
+
+        if( typeof(nosave) == 'undefined' )
+            saveSoundSettings();
+    };
+
+
+
+    this.onRangeChangeSpatial = function($range, nosave)
+    {
+        var spanID = "#"+ $range.target.id.replace("range","span");
+        var value  = parseInt($range.get());
+        var label;
+
+        switch( value )
+        {
+            case 0: label = translator.get("Off");     break;
+            case 1: label = translator.get("Minimal"); break;
+            case 2: label = translator.get("Normal");  break;
+            case 3: label = translator.get("Maximal"); break;
+        }
+
+        $(spanID).text(label);
+
+        if( typeof(nosave) == 'undefined' )
+            saveSoundSettings();
+    };
+
+
+
+    this.onRangeVolChange = function(value, isLocal)
+    {
+        var logVal = logValue(value);
+
+        getRange("#vol1_range").set(value);
+        $('#vol1_span').text(parseInt(logVal * -0.5) + " dB");
+
+        getRange("#vol2_range").set(value);
+        $('#vol2_span').text(parseInt(logVal * -0.5) + " dB");
+
+
+        if( isLocal && webSocket.readyState == webSocket.OPEN )
+            webSocket.send("wsvol=" + value + "&");
+    };
+
+
+
+    var logValue = function(value)
+    {
+        //Log(128/(Midi Volume + 1)) * (-10) * (Max dB below 0/(-24.04))
+
+        var log = Number(value) + 1;
+        var val = Math.round((Math.log10(255 / log) * 105.54571334));
+
+        //console.log("Value= "+value+"   log de val="+log+" "+255/log +"  = "+Math.log10(255/log)  +"   new value= "+val );
+
+        return val;
+    };
+
+
+
+    var saveSoundSettings = function()
+    {
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", (!debug ? "sound" : "http://"+karadioDebugURL+"/sound"), false);
+        xhr.setRequestHeader(content, ctype);
+        xhr.send(
+            "&bass="         + parseInt(getRange("#bass_range").get())
+            + "&treble="     + parseInt(getRange("#treble_range").get())
+            + "&bassfreq="   + parseInt(getRange("#bassfreq_range").get())
+            + "&treblefreq=" + parseInt(getRange("#treblefreq_range").get())
+            + "&spacial="    + parseInt(getRange("#spacial_range").get())
+            + "&"
+        );
+    };
+
+
+
+    this.backupStations = function()
+    {
+        var fileName, output='', textFileAsBlob, downloadLink;
+
+
+        fileName = $('#backup-name').val();
+
+        if( fileName == "" )
+            fileName = "WebStations.txt";
+
+        for( var i=0; i < maxStation; i++ )
+            output += localStorage[i] + '\n';
+
+        textFileAsBlob = new Blob([output], { type: 'text/plain' }), downloadLink = document.createElement("a");
+        downloadLink.style.display = "none";
+        downloadLink.setAttribute("download", fileName);
+        document.body.appendChild(downloadLink);
+
+        if( window.navigator.msSaveOrOpenBlob ){
+            downloadLink.addEventListener("click", function(){
+                window.navigator.msSaveBlob(textFileAsBlob, fileName);
+            });
+        }
+        else if( 'URL' in window ){
+            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        }else{
+            downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+        }
+
+        downloadLink.click();
+    };
+
+
+
+    this.restoreStations = function()
+    {
+        var i, indmax, tosend, reader, lines, line, file, $toast;
+
+        if( window.File && window.FileReader && window.FileList && window.Blob )
+        {
+            reader = new FileReader();
+            xhr    = new XMLHttpRequest();
+
+            reader.onload = function (e)
+            {
+                function fillInfo(ind, arri)
+                {
+                    if (!arri["ovol"])
+                        arri["ovol"] = "0";
+
+                    tosend += "&id=" + ind + "&url=" + arri["URL"] + "&name=" + arri["Name"] + "&file=" + arri["File"] + "&port=" + arri["Port"] + "&ovol=" + arri["ovol"] + "&";
+                    localStorage.setItem(ind, "{\"Name\":\"" + arri["Name"] + "\",\"URL\":\"" + arri["URL"] + "\",\"File\":\"" + arri["File"] + "\",\"Port\":\"" + arri["Port"] + "\",\"ovol\":\"" + arri["ovol"] + "\"}");
+                }
+                // Entire file
+                //console.log(this.result);
+                // By lines
+                lines = this.result.split('\n');
+                localStorage.clear();
+                indmax = 3;
+                line = 0;
+                try
+                {
+                    tosend = "nb=" + indmax;
+
+                    for( i=0 ; i < indmax ; i++ ){
+                        fillInfo(i, JSON.parse(lines[i]));
+                    }
+
+                    xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
+                    xhr.setRequestHeader(content, ctype);
+                    console.log("post " + tosend);
+                    xhr.send(tosend);
+                }
+                catch(ex){
+                    console.log("error " + ex);
+                }
+
+                for( line=indmax; line < lines.length ; line += (indmax-1) )
+                {
+                    //console.log(lines[line]);
+                    try
+                    {
+                        tosend = "nb=" + indmax;
+
+                        for( i=0 ; i < indmax ; i++ ){
+                            fillInfo(line + i, JSON.parse(lines[line + i]));
+                        }
+
+                        xhr.open("POST", (!debug ? "setStation" : "http://"+karadioDebugURL+"/setStation"), false);
+                        xhr.setRequestHeader(content, ctype);
+                        xhr.send(tosend);
+                    }
+                    catch(ex){
+                        console.log("error " + ex);
+                    }
+                }
+                $toast.snackbar("hide");
+                loadStationSelect();
+            };
+
+            file = $('#restore-file')[0].files[0];
+
+            if( file == null )
+                showToast("Please select a file");
+            else
+            {
+                $toast = showToast("Working... Please Wait", 0);
+
+                window.setTimeout(function(){
+                    reader.readAsText(file);
+                }, 1000);
+            }
+        }
+    };
+
+
+
+    this.wifi = function(valid)
+    {
+        if( valid )
+        {
+            var $toast = showToast("System reboot... Please Wait", 0);
+
+            window.setTimeout(function(){
+                $toast.snackbar("hide");
+                window.setTimeout(function(){
+                    window.location.href = "http://"+ $('#ip').val() +"/";
+                }, 2000);
+            }, 16000);
+        }
+
+        xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function()
+        {
+            if( xhr.readyState == 4 && xhr.status == 200 )
+            {
+                var arr = JSON.parse(xhr.responseText);
+
+                $('#ssid').val(arr["ssid"]);
+                $('#passwd').val(arr["pasw"]);
+                $('#ssid2').val(arr["ssid2"]);
+                $('#passwd2').val(arr["pasw2"]);
+
+                $('#mac').val(arr["mac"]);
+                $('#dhcp').prop('checked', arr["dhcp"] == "1" );
+
+                $('#ip').val(arr["ip"]);
+                checkIP( $('#ip') );
+
+                $('#mask').val(arr["msk"]);
+                checkIP( $('#mask') );
+
+                $('#gw').val(arr["gw"]);
+                checkIP( $('#gw') );
+
+                $('#ip, #mask, #gw').prop('disabled', $('#dhcp').is(":checked") );
+
+                $('#ua').val(arr["ua"]);
+            }
+        }
+        xhr.open("POST", (!debug ? "wifi" : "http://"+karadioDebugURL+"/wifi"), false);
+        xhr.setRequestHeader(content, ctype);
+        xhr.send(
+            "valid="  + (valid ? 1 : 0) +
+            "&ssid="  + encodeURIComponent($('#ssid').val()) +
+            "&pasw="  + encodeURIComponent($('#passwd').val()) +
+            "&ssid2=" + encodeURIComponent($('#ssid2').val()) +
+            "&pasw2=" + encodeURIComponent($('#passwd2').val()) +
+            "&ip="    + $('#ip').val() +
+            "&msk="   + $('#mask').val() +
+            "&gw="    + $('#gw').val() +
+            "&ua="    + encodeURIComponent($('#ua').val()) +
+            "&dhcp="  + $('#dhcp').is(":checked") + "&"
+        );
+    };
+
+
+
+    this.clickDHCP = function()
+    {
+        $('#ip, #mask, #gw').prop('disabled', $('#dhcp').is(":checked") );
+    }
+
+
+
+    //THE COLOR VALIDATION IS NOW CHECKED BY BOOTSTRAP, THAT CAN BE DELETED: REVISAR
+    var checkIP = function($selector)
+    {
+        //$selector[0].style.color = /^([0-9]+\.){3}[0-9]+$/.test($selector.val()) ? "#009688" : "#f44336";
+    };
+
+
+
+    this.upgradeFirmware = function()
+    {
+        if( webSocket.readyState == webSocket.OPEN )
+        {
+            var $toast = showToast("Updating the firmware, please wait...", 0);
+
+            webSocket.send("upgrade");
+
+            window.setTimeout(function(){
+                $toast.snackbar("hide");
+                window.setTimeout(function(){
+                    window.location.reload(true);
+                }, 2000);
+            }, 30000);
+        }
+    };
+
+
+
+    var fixedEncodeURIComponent = function(str)
+    {
+        return str.replace(/[&]/g, function(c){
+            return '%' + c.charCodeAt(0).toString(16);
+        });
+    };
+
+
+
     this.parseURL = function(ev)
     {
         if( ev.ctrlKey || ev.keyCode == 17 )
@@ -1517,8 +1488,7 @@ function Karadio()
 
 
 
-    //PRIVATE METHODS:
-    var loadExtPage = function( $selector, url )
+    var loadExtPage = function($selector, url)
     {
         if( window.XDomainRequest )
         {
@@ -1528,8 +1498,9 @@ function Karadio()
         {
             xhr = new XMLHttpRequest();
         }
-        xhr.onload = function(){
-            $selector.html(xhr.responseText);
+        xhr.onload = function()
+        {
+            $selector.html( (/<body[^>]*>((.|[\n\r])*)<\/body>/im).exec(xhr.responseText)[1] );
         }
         xhr.open("GET", url, false);
         try{
@@ -1540,12 +1511,77 @@ function Karadio()
 
 
 
-    this.showToast = function(value, time)
+    this.loadVersionPage = function()
+    {
+        loadExtPage( $("#version_container"), versionURL );
+        translator.lang(Cookies.get("language"));
+
+        var last      = $("#firmware_last").text().split('.').join('');
+        var installed = $("#firmware_installed").text().split('.').join('');
+
+        if( parseInt(installed) < parseInt(last) )
+        {
+            $("#firmware_last").parent().addClass('label-danger').removeClass('label-success');
+
+            if( Cookies.get("show_toast_updates") === "true" && !Cookies.get("hide_toast_firmware_"+last) )
+            {
+                var text = translator.get("New firmware %1 available!").replace("%1", $("#firmware_last").text());
+                var htmlContent =
+                '<div class="row">'+
+                    '<div class="pull-left"><i class="material-icons">memory</i> ' + text + '</div>'+
+                    '<div class="pull-right"><i class="material-icons">clear</i></div>'+
+                '</div>';
+
+                window.setTimeout(function(){
+                    $.snackbar({
+                        content     : htmlContent,
+                        style       : "deeppurple",
+                        timeout     : 0,
+                        htmlAllowed : true,
+                        onClose     : function(){
+                            Cookies.set("hide_toast_firmware_"+last, true, { expires: 7 });
+                        }
+                    });
+                }, 2000);
+            }
+        }
+    };
+
+
+
+    this.loadAboutPage = function()
+    {
+        loadExtPage( $("#about_container"), aboutURL );
+        translator.lang(Cookies.get("language"));
+
+        $('button').focus(function(){
+            var btn = this;
+            window.setTimeout(function(){ btn.blur(); }, 100);
+        });
+
+        $("#yours_button").one("click", function(ev)
+        {
+            loadExtPage( $("#yours_dialog").find(".modal-body"), yoursURL );
+            translator.lang(Cookies.get("language"));
+            setTheme();
+        });
+    };
+
+
+
+    var getRange = function( tagID )
+    {
+        return $(tagID).get(0).noUiSlider;
+    };
+
+
+
+    var showToast = function(value, time)
     {
         var htmlContent =
         '<div class="row wait">'+
             '<div class="pull-left">' + translator.get(value) + '</div>'+
-            '<div class="text-right">'+
+            '<div class="pull-right">'+
                 '<svg class="spinner" width="24px" height="20px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">'+
                    '<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>'+
                 '</svg>'+
@@ -1561,13 +1597,6 @@ function Karadio()
         $toast.snackbar("show");
 
         return $toast;
-    };
-
-
-
-    var getRange = function( tagID )
-    {
-        return $(tagID).get(0).noUiSlider;
     };
 
 
@@ -1636,11 +1665,6 @@ $(document).ready(function(ev)
     $("#settings").click(function(ev)
     {
         karadio.wifi(false);
-    });
-
-    $("#about").click(function(ev)
-    {
-
     });
 
     $("#about").one("click", function(ev){
