@@ -111,6 +111,10 @@ var translations = {
         fr: "",
         es: "Reproducir ahora"
     },
+    "Domain:": {
+        fr: "",
+        es: "Dominio:"
+    },
     "Port:": {
         fr: "",
         es: "Puerto:"
@@ -139,9 +143,13 @@ var translations = {
         fr: "",
         es: "Administrar emisoras"
     },
-    "Reloaded the stations.. Please Wait": {
+    "Reloaded the stations... Please Wait": {
         fr: "",
         es: "Recargando estaciones, por favor espere..."
+    },
+    "The list is modified. Do you want to save the modified list?": {
+        fr: "",
+        es: "La lista ha sido modificada, ¿Guardar los cambios?"
     },
     "Karadio Stations list": {
         fr: "",
@@ -209,19 +217,19 @@ var translations = {
     },
     "Off": {
         fr: "",
-        es: ""
+        es: "Apagado"
     },
     "Minimal": {
         fr: "",
-        es: ""
+        es: "Mínimo"
     },
     "Normal": {
         fr: "",
-        es: ""
+        es: "Normal"
     },
     "Maximal": {
         fr: "",
-        es: ""
+        es: "Máximo"
     },
     "Volume:": {
         fr: "",
@@ -247,9 +255,17 @@ var translations = {
         fr: "",
         es: "Restaurar"
     },
+    "Please select a file": {
+        fr: "",
+        es: "Por favor, seleccione un archivo"
+    },
     "WiFi y Network": {
         fr: "",
         es: "Configuración WiFi"
+    },
+    "System reboot... Please Wait": {
+        fr: "",
+        es: "Karadio reiniciandose, por favor espere..."
     },
     "WiFi:": {
         fr: "",
@@ -419,9 +435,9 @@ var translations = {
         fr: "",
         es: "Historial"
     },
-    "Working.. Please Wait": {
+    "Working... Please Wait": {
         fr: "",
-        es: "Trabajando por favor espere..."
+        es: "Trabajando, por favor espere..."
     },
     "Error, try again": {
         fr: "",

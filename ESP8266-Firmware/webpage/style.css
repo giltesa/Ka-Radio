@@ -136,16 +136,20 @@ p#url1{
 	height: 24px;
 }
 
-#stationsTable {
+#stations_table {
   table-layout:fixed;
 }
-#stationsTable td.hidden-xs {
+#stations_table td.hidden-xs {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#stationsTable .material-icons {
+#stations_table .material-icons {
 	font-size: 20px;
+}
+#stations_table button{
+    padding: 0;
+    margin: 0;
 }
 
 .label {
@@ -196,6 +200,39 @@ p#url1{
     padding-right: 10px;
 }
 
+#snackbar-container .wait .pull-left{
+    padding-top: 2px;
+    padding-left: 15px;
+}
+#snackbar-container .wait .text-right{
+    padding-right: 10px;
+}
+.spinner {
+    animation: rotator 1.4s linear infinite;
+}
+@keyframes rotator {
+      0% { transform: rotate(0deg); }
+    100% { transform: rotate(270deg); }
+}
+.spinner .path {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+}
+@keyframes colors {
+    0%, 25%, 50%, 75%, 100% { stroke: rgba(255,255,255,.84); }
+}
+@keyframes dash {
+      0% { stroke-dashoffset: 187; }
+     50% { stroke-dashoffset: 46.75; transform: rotate(135deg); }
+    100% { stroke-dashoffset: 187; transform: rotate(450deg); }
+}
+
+.em{
+    font-style: italic;
+}
+
 @media (max-width: 668px) {
     .form-group .c1{ padding-left: 5px !important; }
     .form-group.range .c2{ width: 65% !important; }
@@ -219,7 +256,7 @@ p#url1{
     .form-group.range .c3{ width: 5%; padding-left: 0px; }
 
 	.form-group.col2x div { width: 42%; }
-	#yours-dialog .modal-dialog { width: 750px; }
+	#yours_dialog .modal-dialog { width: 750px; }
 }
 
 @media (min-width: 992px) {
@@ -229,7 +266,7 @@ p#url1{
     .form-group.range .c3{ width: 5%; padding-left: 0px; }
 
 	.form-group.col2x div { width: 44%; }
-    #yours-dialog .modal-dialog { width: 970px; }
+    #yours_dialog .modal-dialog { width: 970px; }
 }
 
 @media (min-width: 1200px) {
@@ -243,5 +280,5 @@ p#url1{
     .form-group.range .c3{ width: 5%; padding-left: 0px; }
 
 	.form-group.col2x div { width: 45%; }
-    #yours-dialog .modal-dialog { width: 1170px; }
+    #yours_dialog .modal-dialog { width: 1170px; }
 }

@@ -1,3 +1,4 @@
+<?php header('Access-Control-Allow-Origin: *'); ?>
 <!-- saved from url=(0037)http://karadio.karawin.fr/history.php -->
 <!DOCTYPE html>
 <html>
@@ -162,11 +163,11 @@
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-					<button id="yours-button" type="button" class="btn btn-raised btn-inverse theme" data-toggle="modal" data-target="#yours-dialog"><i class="material-icons">radio</i> <span class="trn">See your prototypes</span></button>
+					<button id="yours-button" type="button" class="btn btn-raised btn-inverse theme" data-toggle="modal" data-target="#yours_dialog"><i class="material-icons">radio</i> <span class="trn">See your prototypes</span></button>
                 </div>
             </div>
 
-            <div id="yours-dialog" class="modal fade" tabindex="-1">
+            <div id="yours_dialog" class="modal fade" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -190,7 +191,7 @@
         <div class="panel-heading">
             <div class="panel-title pull-left trn">Contributors</div>
             <div class="text-right">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#libraries-dialog" title="View third-party libraries"><i class="material-icons theme">code</i></button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#third_party_dialog" title="View third-party libraries"><i class="material-icons theme">code</i></button>
             </div>
         </div>
         <div class="panel-body">
@@ -228,7 +229,7 @@
 
 
             <!-- THIRD PARTY LIBRARIES -->
-            <div id="libraries-dialog" class="modal fade" tabindex="-1">
+            <div id="third_party_dialog" class="modal fade" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

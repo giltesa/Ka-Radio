@@ -1,4 +1,6 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+
 $url   = "http://test.giltesa.com/karadio/php/yours/";
 
 $yours = array(
@@ -223,7 +225,7 @@ $yours = array(
                     <div class="panel-title pull-left"><?php echo $yours[$key]["NAME"] . (!empty($yours[$key]["DATE"]) ? " - " . $yours[$key]["DATE"] : ""); ?></div>
                     <div class="text-right">
                         <?php if( !empty($yours[$key]["LINK"]) ): ?>
-                            <a target="_blank" href="<?php echo $yours[$key]["LINK"]; ?>"><i class="material-icons">link</i></a>
+                            <a target="_blank" href="<?php echo $yours[$key]["LINK"]; ?>"><i class="material-icons theme">link</i></a>
                         <?php else: ?>
                             <label></label>
                         <?php endif; ?>

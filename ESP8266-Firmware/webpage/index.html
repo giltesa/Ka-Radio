@@ -99,9 +99,9 @@
                             <div class="panel-body">
 
                                 <div class="form-group">
-                                    <label for="stationsSelect" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Station:</label>
+                                    <label for="stations_select" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Station:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <select id="stationsSelect" class="form-control selectpicker" onchange="karadio.Select()" data-size="15"></select>
+                                        <select id="stations_select" class="form-control selectpicker" onchange="karadio.Select()" data-size="15"></select>
                                     </div>
                                 </div>
 
@@ -142,7 +142,7 @@
                                 </div>
                                 <div class="togglebutton text-right">
                                     <label>
-                                        <span class="trn">Full</span> <input type="checkbox" id="Full" onclick="karadio.full()" />
+                                        <span class="trn">Full</span> <input type="checkbox" id="station_details" onclick="karadio.stationDetails()" />
                                     </label>
                                 </div>
                             </div>
@@ -209,7 +209,7 @@
                                     <label for="volm_range" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Volume:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
                                         <div id="volm_range" class="slider shor"></div>
-                                        <audio id="monitor" src="" class="audio_sound" onerror="karadio.mError()">
+                                        <audio volume="1" id="monitor" src=""> <!-- onerror="karadio.mError()" //View JS -->
                                             <span class="trn">I'm sorry; your browser doesn't support HTML5</span>
                                             <code>audio</code>.
                                         </audio>
@@ -244,9 +244,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="sleepdelay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Sleep:</label>
+                                    <label for="sleep_delay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Sleep:</label>
                                     <div class="col-xs-8 col-sm-8 col-lg-8">
-                                        <input type="text" id="sleepdelay" class="form-control" onkeyup="karadio.sleepUp(event)" />
+                                        <input type="text" id="sleep_delay" class="form-control" onkeyup="karadio.upSleep(event)" />
                                     </div>
                                     <div class="col-xs-2 col-sm-2 col-lg-2">
                                         <p class="form-control-static"><span class="trn">In:</span> <span id="sminutes">0</span> <span class="trn">Sec.</span></p>
@@ -258,9 +258,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="wakedelay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Wake:</label>
+                                    <label for="wake_delay" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Wake:</label>
                                     <div class="col-xs-8 col-sm-8 col-lg-8">
-                                        <input type="text" id="wakedelay" class="form-control" onkeyup="karadio.wakeUp(event)" />
+                                        <input type="text" id="wake_delay" class="form-control" onkeyup="karadio.upWake(event)" />
                                     </div>
                                     <div class="col-xs-2 col-sm-2 col-lg-2">
                                         <p class="form-control-static"><span class="trn">In:</span> <span id="wminutes">0</span> <span class="trn">Sec.</span></p>
@@ -283,23 +283,30 @@
                             <div class="panel-body">
 
                                 <div class="form-group">
-                                    <label for="instant_url" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">URL:</label>
+                                    <label for="instant_furl" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Full URL:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <input type="text" id="instant_url" class="form-control" name="url" />
+                                        <input type="text" id="instant_furl" class="form-control" name="furl" onkeyup="karadio.parseURL(event)">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="instant_port" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Port:</label>
+                                    <label for="instant_url" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 em trn">Domain:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <input type="number" id="instant_port" class="form-control" name="port" value="80" />
+                                        <input type="text" id="instant_url" class="form-control em" name="url" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="instant_path" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Path:</label>
+                                    <label for="instant_port" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 em trn">Port:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <input type="text" id="instant_path" class="form-control" name="path" value="/" />
+                                        <input type="number" id="instant_port" class="form-control em" name="port" value="80" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="instant_path" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 em trn">Path:</label>
+                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                        <input type="text" id="instant_path" class="form-control em" name="path" value="/" />
                                     </div>
                                 </div>
 
@@ -323,71 +330,84 @@
                     <div class="col-md-12">
 
                         <!-- EDIT STATION -->
-                        <div class="panel panel-default hidden" id="editStationDiv">
-                            <div class="panel-heading">
-                                <div class="panel-title pull-left trn">Edit station</div>
-                                <div class="text-right"><label></label></div>
-                            </div>
-                            <div class="panel-body">
-                                <form>
-                                    <fieldset>
+                        <div id="edit_dialog" class="modal fade" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title trn">Edit station</h4>
+                                    </div>
+                                    <div class="modal-body">
 
-                                        <div class="form-group p">
-                                            <label for="edit_slot" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Slot number:</label>
-                                            <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <p id="edit_slot" class="form-control-static"></p>
-                                            </div>
-                                        </div>
+                                        <form>
+                                            <fieldset>
 
-                                        <div class="form-group">
-                                            <label for="edit_name" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Name:</label>
-                                            <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="text" id="edit_name" class="form-control" name="name" />
-                                            </div>
-                                        </div>
+                                                <div class="form-group p">
+                                                    <label for="edit_slot" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Slot number:</label>
+                                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                                        <p id="edit_slot" class="form-control-static"></p>
+                                                    </div>
+                                                </div>
 
-                                        <div class="form-group">
-                                            <label for="edit_url" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">URL:</label>
-                                            <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="text" id="edit_url" class="form-control" name="url" />
-                                            </div>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label for="edit_name" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Name:</label>
+                                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                                        <input type="text" id="edit_name" class="form-control" name="name" />
+                                                    </div>
+                                                </div>
 
-                                        <div class="form-group">
-                                            <label for="edit_file" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Path:</label>
-                                            <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="text" id="edit_file" class="form-control" name="path" value="/" />
-                                            </div>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label for="edit_furl" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Full URL:</label>
+                                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                                        <input type="text" id="edit_furl" class="form-control" name="furl" onkeyup="karadio.parseURL(event)">
+                                                    </div>
+                                                </div>
 
-                                        <div class="form-group">
-                                            <label for="edit_port" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Port:</label>
-                                            <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <input type="number" id="edit_port" class="form-control" name="port" value="80" />
-                                            </div>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label for="edit_url" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 em trn">Domain:</label>
+                                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                                        <input type="text" id="edit_url" class="form-control em" name="url" />
+                                                    </div>
+                                                </div>
 
-                                        <div class="form-group range0" style="margin-top: 20px;">
-                                            <label for="edit_ovol" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Volume offset:</label>
-                                            <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                                <div id="edit_ovol" class="slider shor"></div>
-                                            </div>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label for="edit_port" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 em trn">Port:</label>
+                                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                                        <input type="number" id="edit_port" class="form-control em" name="port" value="80" />
+                                                    </div>
+                                                </div>
 
-                                        <div class="form-group">
-                                            <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                                <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.saveStation()" title="Save"><i class="material-icons">save</i></button>
-                                                <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.abortStation()" title="Cancel"><i class="material-icons">close</i></button>
-                                            </div>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label for="edit_path" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 em trn">Path:</label>
+                                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                                        <input type="text" id="edit_path" class="form-control em" name="path" value="/" />
+                                                    </div>
+                                                </div>
 
-                                    </fieldset>
-                                </form>
+                                                <div class="form-group range0" style="margin-top: 20px;">
+                                                    <label for="edit_ovol" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Volume offset:</label>
+                                                    <div class="c2 col-xs-10 col-sm-10 col-lg-10">
+                                                        <div id="edit_ovol" class="slider shor"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
+                                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.saveStation()" title="Save" data-dismiss="modal"><i class="material-icons">save</i></button>
+                                                        <button type="button" class="btn btn-raised btn-inverse theme" title="Cancel" data-dismiss="modal"><i class="material-icons">close</i></button>
+                                                    </div>
+                                                </div>
+
+                                            </fieldset>
+                                        </form>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+
                         <!-- MANAGE STATIONS -->
-                        <div class="panel panel-default" id="editStationDiv">
+                        <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="panel-title pull-left trn">Manage stations</div>
                                 <div class="text-right"><label></label></div>
@@ -397,14 +417,14 @@
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
                                         <button type="button" id="refresh" class="btn btn-raised btn-inverse theme" onClick="karadio.refreshStations()"  title="This will reload the stations from the WebRadio"><i class="material-icons">cached</i></button>
-                                        <button type="button" id="stsave"  class="btn btn-raised btn-inverse theme" onClick="karadio.stChanged()"        title="This will save all stations to the WebRadio"><i class="material-icons">save</i></button>
+                                        <button type="button" id="stsave"  class="btn btn-raised btn-inverse theme" onClick="karadio.stChanged()"        title="This will save all stations to the WebRadio" disabled><i class="material-icons">save</i></button>
                                         <button type="button" id="clear"   class="btn btn-raised btn-inverse theme" onClick="karadio.clearStations()"    title="Warning: This will clear all stations. Be sure to save them before."><i class="material-icons">delete</i></button>
                                         <button type="button" id="print"   class="btn btn-raised btn-inverse theme" onClick="karadio.printStationList()" title="Print the list"><i class="material-icons">print</i></button>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <table id="stationsTable" class="table table-striped table-hover">
+                                    <table id="stations_table" class="table table-striped table-hover">
                                         <thead>
                                             <tr>
                                                 <th class="trn" style="width:5%;">No.</th>
@@ -517,13 +537,13 @@
                                 <div class="form-group">
                                     <label class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Download:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <input type="text" class="form-control" id="filesave" value="WebStations.txt" pattern="^.+\.txt$" />
+                                        <input type="text" class="form-control" id="backup-name" value="WebStations.txt" pattern="^.+\.txt$" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.saveTextAsFile()" title="Save Stations from WebRadio"><i class="material-icons">file_download</i> <span class="trn">Download</span></button>
+                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.backupStations()" title="Get Stations backup from Karadio"><i class="material-icons">file_download</i> <span class="trn">Download</span></button>
                                     </div>
                                 </div>
 
@@ -533,13 +553,13 @@
                                     <label for="inputFile" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Restore:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
                                         <input type="text" readonly class="form-control" placeholder="Browse..." />
-                                        <input type="file" id="fileload" accept="text/plain" />
+                                        <input type="file" id="restore-file" accept="text/plain" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.downloadStations()" title="Restore Stations to WebRadio"><i class="material-icons">file_upload</i> <span class="trn">Restore</span></button>
+                                        <button type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.restoreStations()" title="Restore Stations backup to Karadio"><i class="material-icons">file_upload</i> <span class="trn">Restore</span></button>
                                     </div>
                                 </div>
 
@@ -551,7 +571,7 @@
                             <div class="panel-heading">
                                 <div class="panel-title pull-left trn">WiFi y Network</div>
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-default" onClick="karadio.valid()" title="Validate"><i class="material-icons theme">done</i></button>
+                                    <button type="button" class="btn btn-default" onClick="karadio.wifi(true)" title="Validate"><i class="material-icons theme">done</i></button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -577,9 +597,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Mac" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Mac Address:</label>
+                                    <label for="mac" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Mac Address:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <p id="Mac" class="form-control-static"></p>
+                                        <p id="mac" class="form-control-static"></p>
                                     </div>
                                 </div>
 
@@ -588,7 +608,7 @@
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
                                         <div class="checkbox">
                                             <label>
-                                                <input type="checkbox" id="dhcp" onclick="karadio.clickdhcp()" />
+                                                <input type="checkbox" id="dhcp" onclick="karadio.clickDHCP()" />
                                             </label>
                                         </div>
                                     </div>
@@ -623,7 +643,7 @@
                             <div class="panel-heading">
                                 <div class="panel-title pull-left trn">HTML Option</div>
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-default" onClick="karadio.wifi(0)" title="Validate"><i class="material-icons theme">done</i></button>
+                                    <button type="button" class="btn btn-default" onClick="karadio.wifi(false)" title="Validate"><i class="material-icons theme">done</i></button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -650,10 +670,10 @@
 
                                 <div class="form-group togglebutton">
                                     <label class="control-label c1 col-xs-2 col-sm-2 col-lg-2">
-                                        <input type="checkbox" id="show-toast-updates" onClick="" />
+                                        <input type="checkbox" id="show_toast_updates" onClick="" />
                                     </label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <label for="show-toast-updates" class="control-label trn">Show a popup when new firmware is available.</label>
+                                        <label for="show_toast_updates" class="control-label trn">Show a popup when new firmware is available.</label>
                                     </div>
                                 </div>
 
@@ -669,9 +689,9 @@
                                 -->
 
                                 <div class="form-group">
-                                    <label for="theme-select" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Theme color:</label>
+                                    <label for="theme_select" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Theme color:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <select id="theme-select" class="form-control selectpicker">
+                                        <select id="theme_select" class="form-control selectpicker">
                                             <option value="success">Green</option>
                                             <option value="primary">Teal</option>
                                             <option value="warning">Deep Orange</option>
@@ -680,12 +700,12 @@
                                             <option value="inverse">Dark Blue</option>
                                         </select>
 
-                                        <span id="theme-primary" class="navbar navbar-primary" style="display:none;"></span> <!-- It is used to get CSS by jQuery -->
-                                        <span id="theme-success" class="navbar navbar-success" style="display:none;"></span>
-                                        <span id="theme-info"    class="navbar navbar-info"    style="display:none;"></span>
-                                        <span id="theme-warning" class="navbar navbar-warning" style="display:none;"></span>
-                                        <span id="theme-danger"  class="navbar navbar-danger"  style="display:none;"></span>
-                                        <span id="theme-inverse" class="navbar navbar-inverse" style="display:none;"></span>
+                                        <span id="theme_primary" class="navbar navbar-primary" style="display:none;"></span> <!-- It is used to get CSS by jQuery -->
+                                        <span id="theme_success" class="navbar navbar-success" style="display:none;"></span>
+                                        <span id="theme_info"    class="navbar navbar-info"    style="display:none;"></span>
+                                        <span id="theme_warning" class="navbar navbar-warning" style="display:none;"></span>
+                                        <span id="theme_danger"  class="navbar navbar-danger"  style="display:none;"></span>
+                                        <span id="theme_inverse" class="navbar navbar-inverse" style="display:none;"></span>
                                     </div>
                                 </div>
 
@@ -698,7 +718,7 @@
                                 <div class="panel-title pull-left trn">Upgrade firmware</div>
                                 <div class="text-right">
                                     <label>
-                                        <span class="trn">Installed:</span> <a href="https://github.com/karawin/Ka-Radio" target="_blank" class="theme">V<span id="firmware-installed">1.8</span></a>
+                                        <span class="trn">Installed:</span> <a href="https://github.com/karawin/Ka-Radio" target="_blank" class="theme">V<span id="firmware_installed">1.8</span></a>
                                     </label>
                                 </div>
                             </div>
