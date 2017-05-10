@@ -75,10 +75,10 @@ function Karadio()
                 console.log("onmessage:" + event.data);
 
                 if( arr["meta"] )
-                    $('#playing').text(arr["meta"].replace(/\\/g,""));
+                    $("#playing").text(arr["meta"].replace(/\\/g,""));
 
                 if( arr["wsvol"] )
-                    onRangeVolChange(arr['wsvol'], false);
+                    onRangeVolChange(arr["wsvol"], false);
 
                 if( arr["wsicy"] )
                     icyResp(arr["wsicy"]);
@@ -133,7 +133,7 @@ function Karadio()
 
     var checkWebSocket = function()
     {
-        if( typeof webSocket == 'undefined' || webSocket.readyState == webSocket.CLOSED )
+        if( typeof webSocket == "undefined" || webSocket.readyState == webSocket.CLOSED )
             openWebSocket();
 
         else if( webSocket.readyState == webSocket.OPEN )
@@ -144,51 +144,51 @@ function Karadio()
 
     var icyResp = function(arr)
     {
-        var url, isFull = $('#station_details').is(":checked");
+        var url, isFull = $("#station_details").is(":checked");
 
-        if( typeof arr["auto"] != 'undefined' ){ // undefined for webSocket
-            $('#aplay').prop('checked', arr["auto"] == "1" );
+        if( typeof arr["auto"] != "undefined" ){ // undefined for webSocket
+            $("#aplay").prop("checked", arr["auto"] == "1" );
         }
 
-        $('#ldescr, #lgenre, #lnot1, #lbitr, #lurl, #icon').addClass("hidden");
+        $("#ldescr, #lgenre, #lnot1, #lbitr, #lurl, #icon").addClass("hidden");
 
         if( isFull )
         {
             if( arr["descr"] )
-                $('#ldescr').removeClass("hidden");
+                $("#ldescr").removeClass("hidden");
 
             if( arr["genre"] )
-                $('#lgenre').removeClass("hidden");
+                $("#lgenre").removeClass("hidden");
 
             if( (arr["not1"] || arr["not2"]) )
-                $('#lnot1').removeClass("hidden");
+                $("#lnot1").removeClass("hidden");
 
             if( arr["bitr"] )
-                $('#lbitr').removeClass("hidden");
+                $("#lbitr").removeClass("hidden");
         }
 
-        $('#curst').text( arr["curst"].replace(/\\/g, "") );
-        $('#name' ).text( arr["name"].replace(/\\/g, "") );
-        $('#descr').text( arr["descr"].replace(/\\/g, "") );
-        $('#genre').text( arr["genre"].replace(/\\/g, "") );
-        $('#not1' ).text( arr["not1"].replace(/\\|^<BR>/g, "") );
-        $('#not2' ).text( arr["not2"].replace(/\\/g, "") );
-        $('#bitr' ).text( arr["bitr"].replace(/\\/g, "") + " kB/s" );
+        $("#curst").text( arr["curst"].replace(/\\/g, "") );
+        $("#name" ).text( arr["name"].replace(/\\/g, "") );
+        $("#descr").text( arr["descr"].replace(/\\/g, "") );
+        $("#genre").text( arr["genre"].replace(/\\/g, "") );
+        $("#not1" ).text( arr["not1"].replace(/\\|^<BR>/g, "") );
+        $("#not2" ).text( arr["not2"].replace(/\\/g, "") );
+        $("#bitr" ).text( arr["bitr"].replace(/\\/g, "") + " kB/s" );
 
         if( arr["url1"] )
         {
-            $('#lurl, #icon').removeClass("hidden");
+            $("#lurl, #icon").removeClass("hidden");
 
             url = arr["url1"].replace(/\\| /g, "");
 
-            if( url == 'http://www.icecast.org/' )
+            if( url == "http://www.icecast.org/" )
                 $("#icon").prop("src","/logo.png"); //KARAWIN: What is the purpose of this, the code is necessary, the logo.png is necessary?
             else
                 $("#icon").prop("src","http://www.google.com/s2/favicons?domain_url=" + url);
         }
 
         url = arr["url1"].replace(/\\/g, "");
-        $('#url1').text(url);
+        $("#url1").text(url);
         $("#url2").attr("href", url);
     };
 
@@ -272,7 +272,7 @@ function Karadio()
             if( xhr.readyState == 4 && xhr.status == 200 )
             {
                 var arr = JSON.parse(xhr.responseText);
-                $('#aplay').prop('checked', arr["rauto"] == "1" );
+                $("#aplay").prop("checked", arr["rauto"] == "1" );
             }
         }
         try
@@ -294,7 +294,7 @@ function Karadio()
         {
             xhr.open("POST", (!debug ? "auto" : "http://"+karadioDebugURL+"/auto"), false);
             xhr.setRequestHeader(content, ctype);
-            xhr.send("id="+ $('#aplay').is(":checked") +"&");
+            xhr.send("id="+ $("#aplay").is(":checked") +"&");
         }
         catch(ex){
             console.log("error" + ex);
@@ -305,7 +305,7 @@ function Karadio()
 
     this.selectStation = function()
     {
-        if( $('#aplay').is(":checked") )
+        if( $("#aplay").is(":checked") )
             playStation();
     };
 
@@ -322,7 +322,7 @@ function Karadio()
             $select = $("#stations_select");
             id      = $select.find(":selected").val();
 
-            localStorage.setItem('selindexstore', id.toString());
+            localStorage.setItem("selindexstore", id.toString());
 
             xhr = new XMLHttpRequest();
             xhr.open("POST", (!debug ? "play" : "http://"+karadioDebugURL+"/play"), false);
@@ -344,7 +344,7 @@ function Karadio()
         //checkWebSocket();
 
         mStop();
-        localStorage.setItem('selindexstore', id.toString());
+        localStorage.setItem("selindexstore", id.toString());
 
         try
         {
@@ -356,6 +356,8 @@ function Karadio()
         catch(ex){
             console.log("error" + ex);
         }
+
+        $("#playing").text("");
     };
 
 
@@ -368,7 +370,7 @@ function Karadio()
 
         if( id > 0 )
         {
-            $select.selectpicker('val', --id);
+            $select.selectpicker("val", --id);
             selectStation();
         }
     };
@@ -379,11 +381,11 @@ function Karadio()
     {
         var $select = $("#stations_select");
         var id      = $select.find(":selected").val();
-        var length  = $select.find('option').length;
+        var length  = $select.find("option").length;
 
         if( id < length - 1 )
         {
-            $select.selectpicker('val', ++id);
+            $select.selectpicker("val", ++id);
             selectStation();
         }
     };
@@ -392,14 +394,14 @@ function Karadio()
 
     this.stationDetails = function()
     {
-        var isFull = $('#station_details').is(":checked");
+        var isFull = $("#station_details").is(":checked");
 
         Cookies.set("show_station_details", isFull, { expires: 365 });
 
         if( !isFull )
-            $('#ldescr, #lgenre, #lnot1, #lbitr').addClass("hidden");
+            $("#ldescr, #lgenre, #lnot1, #lbitr").addClass("hidden");
         else
-            $('#ldescr, #lgenre, #lnot1, #lbitr').removeClass("hidden");
+            $("#ldescr, #lgenre, #lnot1, #lbitr").removeClass("hidden");
     };
 
 
@@ -465,151 +467,100 @@ function Karadio()
 
         $("#time").text(new Date().toLocaleTimeString());
 
-
-        if( $elt.is(':disabled') && !isNaN($elt.val()) )
+        if( $elt.is(":disabled") && !isNaN($elt.val()) )
         {
-            if( $elt.val() > 0 )
-            {
+            if( $elt.val() > 0 ){
                 $elt.val( $elt.val()-1 );
             }
-            else if( $elt.val() == 0 )
-            {
+            else if( $elt.val() == 0 ){
                 $elt.val("");
-                $("#btn_start_sleep, #sleep_time").prop('disabled', false);
+                $("#btn_start_sleep, #sleep_time").prop("disabled", false);
             }
         }
 
-        if( $eltw.is(':disabled') && !isNaN($eltw.val()) )
+        if( $eltw.is(":disabled") && !isNaN($eltw.val()) )
         {
-            if( $eltw.val() > 0 )
-            {
+            if( $eltw.val() > 0 ){
                 $eltw.val( $eltw.val()-1 );
             }
-            else if( $eltw.val() == 0 )
-            {
+            else if( $eltw.val() == 0 ){
                 $eltw.val("");
-                $("#btn_start_wake, #wake_time").prop('disabled', false);
+                $("#btn_start_wake, #wake_time").prop("disabled", false);
             }
         }
     };
 
 
 
-    this.upSleep = function(ev)
+    this.upTimerSW = function(ev, ope)
     {
         if( ev.keyCode == 13 )
-            startSleep();
+            startTimerSW(ope);
     };
 
 
 
-    this.startSleep = function()
+    this.startTimerSW = function(ope)
     {
-        var valm;
-        var cur = new Date();
-        var hop = $("#sleep_time").val().split(":");
-        var h0  = parseInt(hop[0], 10);
-        var h1  = parseInt(hop[1], 10);
+        var pfx, valm, cur, hop, h0, h1;
 
-        if( isNaN(h0) )
-            showToast("Error, try again");
-        else
+        if( ope == "s" || ope == "w")
         {
-            if( isNaN(h1) )
-                valm = h0; // minute mode
+            pfx = (ope == "s" ? "sleep" : "wake");
+            cur = new Date();
+            hop = $("#"+pfx+"_time").val().split(":");
+            h0  = parseInt(hop[0], 10);
+            h1  = parseInt(hop[1], 10);
+
+            if( isNaN(h0) )
+                showToast("Error, try again");
             else
             {
-                // time mode
-                fut = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), h0, h1, 0);
-
-                if( fut.getTime() > cur.getTime() )
-                    valm = Math.round((fut.getTime() - cur.getTime()) / 60000); //seconds
+                if( isNaN(h1) )
+                    valm = h0; // minute mode
                 else
-                    valm = 1440 - Math.round((cur.getTime() - fut.getTime()) / 60000); //seconds
+                {
+                    // time mode
+                    fut = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), h0, h1, 0);
 
-                if( valm == 0 ){
-                    valm = fut.getTime() > cur.getTime() ? 1 : 1440;
+                    if( fut.getTime() > cur.getTime() )
+                        valm = Math.round((fut.getTime() - cur.getTime()) / 60000); //seconds
+                    else
+                        valm = 1440 - Math.round((cur.getTime() - fut.getTime()) / 60000); //seconds
+
+                    if( valm == 0 ){
+                        valm = fut.getTime() > cur.getTime() ? 1 : 1440;
+                    }
                 }
+
+                webSocket.send( (ope=="s" ? "startSleep=" : "startWake=") + valm + "&");
+
+                window.setTimeout(function(label){
+                    $("#"+pfx+"_time").val(label);
+                    $("#btn_start_"+pfx+", #"+pfx+"_time").prop("disabled", true);
+                }, 2000, (valm*60)-2);
+
+                showToast(ope=="s" ? "Started, Good night!" : "Started");
             }
-
-            webSocket.send("startSleep=" + valm + "&");
-
-            window.setTimeout(function(label){
-                $('#sleep_time').val(label);
-                $("#btn_start_sleep, #sleep_time").prop('disabled', true);
-            }, 2000, (valm*60)-2);
-
-            showToast("Started, Good night!");
         }
     };
 
 
 
-    this.stopSleep = function()
+    this.stopTimerSW = function(ope)
     {
-        webSocket.send("stopSleep");
-        $("#sleep_time").val("");
-        $("#btn_start_sleep, #sleep_time").prop('disabled', false);
-    };
-
-
-
-    this.upWake = function(ev)
-    {
-        if( ev.keyCode == 13 )
-            startWake();
-    };
-
-
-
-    this.startWake = function()
-    {
-        var valm;
-        var cur = new Date();
-        var hop = $("#wake_time").val().split(":");
-        var h0  = parseInt(hop[0], 10);
-        var h1  = parseInt(hop[1], 10);
-
-        if( isNaN(h0) )
-            showToast("Error, try again");
-        else
+        if( ope == "s" )
         {
-            if( isNaN(h1) )
-                valm = h0; // minute mode
-            else
-            {
-                // time mode
-                fut = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), h0, h1, 0);
-
-                if( fut.getTime() > cur.getTime() )
-                    valm = Math.round((fut.getTime() - cur.getTime()) / 60000); //seconds
-                else
-                    valm = 1440 - Math.round((cur.getTime() - fut.getTime()) / 60000); //seconds
-
-                if( valm == 0 ){
-                    valm = fut.getTime() > cur.getTime() ? 1 : 1440;
-                }
-            }
-
-            webSocket.send("startWake=" + valm + "&");
-
-
-            window.setTimeout(function(label){
-                $('#wake_time').val(label);
-                $("#btn_start_wake, #wake_time").prop('disabled', true);
-            }, 2000, (valm*60)-2);
-
-            showToast("Started");
+            webSocket.send("stopSleep");
+            $("#sleep_time").val("");
+            $("#btn_start_sleep, #sleep_time").prop("disabled", false);
         }
-    };
-
-
-
-    this.stopWake = function()
-    {
-        webSocket.send("stopWake");
-        $("#wake_time").val("");
-        $("#btn_start_wake, #wake_time").prop('disabled', false);
+        else if( ope == "w" )
+        {
+            webSocket.send("stopWake");
+            $("#wake_time").val("");
+            $("#btn_start_wake, #wake_time").prop("disabled", false);
+        }
     };
 
 
@@ -622,15 +573,15 @@ function Karadio()
             xhr = new XMLHttpRequest();
             xhr.open("POST", (!debug ? "instant_play" : "http://"+karadioDebugURL+"/instant_play"), false);
             xhr.setRequestHeader(content, ctype);
-            curl = $('#instant_path').val();
+            curl = $("#instant_path").val();
 
             if( !(curl.substring(0, 1) === "/") )
                 curl = "/" + curl;
 
-            $('#instant_url').val( $('#instant_url').val().replace(/^https?:\/\//, '') );
+            $("#instant_url").val( $("#instant_url").val().replace(/^https?:\/\//, "") );
 
             curl = fixedEncodeURIComponent(curl);
-            xhr.send("url=" + $('#instant_url').val() + "&port=" + $('#instant_port').val() + "&path=" + curl + "&");
+            xhr.send("url=" + $("#instant_url").val() + "&port=" + $("#instant_port").val() + "&path=" + curl + "&");
         }
         catch(ex){
             console.log("error" + ex);
@@ -671,7 +622,7 @@ function Karadio()
         function addStation(id, arr)
         {
             if( arr["Name"].length > 0 )
-                $options.push( $('<option/>').attr({ 'value': id }).text(id +": "+ arr["Name"]) );
+                $options.push( $("<option/>").attr({ "value": id }).text(id +": "+ arr["Name"]) );
         }
 
         while( id < maxStation )
@@ -723,8 +674,8 @@ function Karadio()
         refresh();
 
         $select.append($options);
-        $select.val( parseInt(localStorage.getItem('selindexstore')) );
-        $select.selectpicker('refresh');
+        $select.val( parseInt(localStorage.getItem("selindexstore")) );
+        $select.selectpicker("refresh");
     };
 
 
@@ -732,8 +683,9 @@ function Karadio()
     this.loadStationTable = function()
     {
         var id      = 0;
-        var $tbody  = $("#stations_table").find('tbody');
+        var $tbody  = $("#stations_table").find("tbody");
         var $trRows = [];
+        var $tr;
 
 
         function getVal(val){
@@ -798,32 +750,49 @@ function Karadio()
             }
         }
 
-
-        /*$trRows.find("tr").draggable({
-            start:function(ev, ui){
-                //this is where dragging starts when you push mousedown and move mouse
-                //dragStart
-                 ev.dataTransfer.setData("Text", ev.target.id);
-            },
-            drag:function(ev, ui){
-                 //this function will be called after drag started each time you move your mouse
-                 //allowDrop
-                 //ev.preventDefault();
-            },
-            stop:function(ev, ui){
-                //this is where you release mouse button
-                //dragDrop
-                ev.preventDefault();
-                var TRStart = document.getElementById(ev.dataTransfer.getData("text"));
-                var TRDrop  = document.getElementById(ev.currentTarget.id);
-                moveNodes(TRStart, TRDrop);
-            }
-        });*/
-
-
         $tbody.empty();
         $tbody.append($trRows);
         setTheme();
+
+        $tr = $tbody.find("tr");
+        $tr.prop("draggable", true);
+
+        $tr.on("dragstart", function(ev){
+            ev.originalEvent.dataTransfer.setData("Text", ev.target.id);
+        });
+
+        $tr.on("drop", function(ev)
+        {
+            ev.preventDefault();
+            var TRStart = $("#"+ ev.originalEvent.dataTransfer.getData("Text"))[0];
+            var TRDrop  = $("#"+ ev.currentTarget.id)[0];
+            moveNodes(TRStart,TRDrop);
+        });
+
+        $tr.on("dragover", function(ev){
+            ev.preventDefault();
+        });
+    };
+
+
+
+    var moveNodes = function(a, b)
+    {
+        var pa1 = a.parentNode, sib = b.nextSibling, txt;
+
+        if( sib === a )
+            sib = sib.nextSibling;
+
+        pa1.insertBefore(a, b);
+
+        for( txt=0 ; txt < maxStation ; txt++ )
+        {
+            pa1.rows[txt].cells[0].innerText = txt.toString();
+            pa1.rows[txt].cells[6].innerHTML = b.parentNode.rows[txt].cells[6].innerHTML;
+        }
+
+        $("#stsave").prop("disabled", false);
+        stchanged = true;
     };
 
 
@@ -850,7 +819,7 @@ function Karadio()
         if( stchanged && confirm(translator.get("The list is modified. Do you want to save the modified list?")) )
         {
             $toast = showToast("Working... Please Wait", 0);
-            tbody  = $("#stations_table").find('tbody')[0];
+            tbody  = $("#stations_table").find("tbody")[0];
 
             xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){}
@@ -911,24 +880,24 @@ function Karadio()
 
         function cpedit(arr)
         {
-            $('#edit_url').val(arr["URL"]);
-            $('#edit_name').val(arr["Name"]);
-            $('#edit_path').val(arr["File"]);
+            $("#edit_url").val(arr["URL"]);
+            $("#edit_name").val(arr["Name"]);
+            $("#edit_path").val(arr["File"]);
 
             if( arr["Port"] == "0" )
                 arr["Port"] = "80";
 
-            $('#edit_port').val(arr["Port"]);
+            $("#edit_port").val(arr["Port"]);
 
             if( arr["URL"] )
-                $('#edit_furl').val("http://"+ arr["URL"] +":"+ arr["Port"] + arr["File"]);
+                $("#edit_furl").val("http://"+ arr["URL"] +":"+ arr["Port"] + arr["File"]);
             else
-                $('#edit_furl').val("");
+                $("#edit_furl").val("");
 
             getRange("#edit_ovol").set(arr["ovol"]);
         }
 
-        $('#edit_slot').text(id);
+        $("#edit_slot").text(id);
         idstr = id.toString();
 
         if( localStorage.getItem(idstr) != null )
@@ -970,11 +939,11 @@ function Karadio()
     this.saveStation = function()
     {
         var
-            slot = $('#edit_slot').text(),
-            name = $('#edit_name').val(),
-            url  = $('#edit_url' ).val().replace(/^https?:\/\//, ''),
-            file = $('#edit_path').val(),
-            port = $('#edit_port').val(),
+            slot = $("#edit_slot").text(),
+            name = $("#edit_name").val(),
+            url  = $("#edit_url" ).val().replace(/^https?:\/\//, ""),
+            file = $("#edit_path").val(),
+            port = $("#edit_port").val(),
             ovol = parseInt(getRange("#edit_ovol").get()),
             jfile;
 
@@ -1029,11 +998,11 @@ function Karadio()
     {
         var printWin, html, table;
 
-        table = $('#stations_table').clone();
+        table = $("#stations_table").clone();
 
-        $(table).find('tr').find('th:eq(6), td:eq(6)').remove();
+        $(table).find("tr").find("th:eq(6), td:eq(6)").remove();
 
-        $(table).find('tr').find('td:eq(1)').each(function(){
+        $(table).find("tr").find("td:eq(1)").each(function(){
             if( $(this).text().trim() == "" )
                 $(this).parent().remove();
         });
@@ -1048,51 +1017,6 @@ function Karadio()
         printWin.print();
         printWin.close();
     };
-
-
-
-    /*this.dragStart = function(ev)
-    {
-        //ev.dataTransfer.setData("Text", ev.target.id);
-    };*/
-
-
-
-    var moveNodes = function(a, b)
-    {
-        var pa1 = a.parentNode, sib = b.nextSibling, txt;
-
-        if( sib === a )
-            sib = sib.nextSibling;
-
-        pa1.insertBefore(a, b);
-
-        for( txt=0 ; txt < maxStation ; txt++ )
-        {
-            pa1.rows[txt].cells[0].innerText = txt.toString();
-            pa1.rows[txt].cells[6].innerHTML = b.parentNode.rows[txt].cells[6].innerHTML;
-        }
-
-        $("#stsave").prop("disabled", false);
-        stchanged = true;
-    };
-
-
-
-    /*dragDrop = function(ev)
-    {
-        ev.preventDefault();
-        var TRStart = document.getElementById(ev.dataTransfer.getData("text"));
-        var TRDrop = document.getElementById(ev.currentTarget.id);
-        moveNodes(TRStart, TRDrop);
-    };*/
-
-
-
-    /*allowDrop = function(ev)
-    {
-        ev.preventDefault();
-    };*/
 
 
 
@@ -1133,7 +1057,7 @@ function Karadio()
 
         $(spanID).text((value * multiplier) + " dB");
 
-        if( typeof(nosave) == 'undefined' )
+        if( typeof(nosave) == "undefined" )
             saveSoundSettings();
     };
 
@@ -1149,7 +1073,7 @@ function Karadio()
 
         $(spanID).text(/*"From " +*/ (value * multiplier) + " kHz");
 
-        if( typeof(nosave) == 'undefined' )
+        if( typeof(nosave) == "undefined" )
             saveSoundSettings();
     };
 
@@ -1165,7 +1089,7 @@ function Karadio()
 
         $(spanID).text(/*"Under " +*/ (value * multiplier) + " Hz");
 
-        if( typeof(nosave) == 'undefined' )
+        if( typeof(nosave) == "undefined" )
             saveSoundSettings();
     };
 
@@ -1187,7 +1111,7 @@ function Karadio()
 
         $(spanID).text(label);
 
-        if( typeof(nosave) == 'undefined' )
+        if( typeof(nosave) == "undefined" )
             saveSoundSettings();
     };
 
@@ -1198,10 +1122,10 @@ function Karadio()
         var logVal = logValue(value);
 
         getRange("#vol1_range").set(value);
-        $('#vol1_span').text(parseInt(logVal * -0.5) + " dB");
+        $("#vol1_span").text(parseInt(logVal * -0.5) + " dB");
 
         getRange("#vol2_range").set(value);
-        $('#vol2_span').text(parseInt(logVal * -0.5) + " dB");
+        $("#vol2_span").text(parseInt(logVal * -0.5) + " dB");
 
 
         if( isLocal && webSocket.readyState == webSocket.OPEN )
@@ -1243,18 +1167,18 @@ function Karadio()
 
     this.backupStations = function()
     {
-        var fileName, output='', textFileAsBlob, downloadLink;
+        var fileName, output="", textFileAsBlob, downloadLink;
 
 
-        fileName = $('#backup-name').val();
+        fileName = $("#backup-name").val();
 
         if( fileName == "" )
             fileName = "WebStations.txt";
 
         for( var i=0; i < maxStation; i++ )
-            output += localStorage[i] + '\n';
+            output += localStorage[i] + "\n";
 
-        textFileAsBlob = new Blob([output], { type: 'text/plain' }), downloadLink = document.createElement("a");
+        textFileAsBlob = new Blob([output], { type: "text/plain" }), downloadLink = document.createElement("a");
         downloadLink.style.display = "none";
         downloadLink.setAttribute("download", fileName);
         document.body.appendChild(downloadLink);
@@ -1264,7 +1188,7 @@ function Karadio()
                 window.navigator.msSaveBlob(textFileAsBlob, fileName);
             });
         }
-        else if( 'URL' in window ){
+        else if( "URL" in window ){
             downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
         }else{
             downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
@@ -1297,7 +1221,7 @@ function Karadio()
                 // Entire file
                 //console.log(this.result);
                 // By lines
-                lines = this.result.split('\n');
+                lines = this.result.split("\n");
                 localStorage.clear();
                 indmax = 3;
                 line = 0;
@@ -1341,7 +1265,7 @@ function Karadio()
                 loadStationSelect();
             };
 
-            file = $('#restore-file')[0].files[0];
+            file = $("#restore-file")[0].files[0];
 
             if( file == null )
                 showToast("Please select a file");
@@ -1367,7 +1291,7 @@ function Karadio()
             window.setTimeout(function(){
                 $toast.snackbar("hide");
                 window.setTimeout(function(){
-                    window.location.href = "http://"+ $('#ip').val() +"/";
+                    window.location.href = "http://"+ $("#ip").val() +"/";
                 }, 2000);
             }, 16000);
         }
@@ -1379,41 +1303,41 @@ function Karadio()
             {
                 var arr = JSON.parse(xhr.responseText);
 
-                $('#ssid').val(arr["ssid"]);
-                $('#passwd').val(arr["pasw"]);
-                $('#ssid2').val(arr["ssid2"]);
-                $('#passwd2').val(arr["pasw2"]);
+                $("#ssid").val(arr["ssid"]);
+                $("#passwd").val(arr["pasw"]);
+                $("#ssid2").val(arr["ssid2"]);
+                $("#passwd2").val(arr["pasw2"]);
 
-                $('#mac').val(arr["mac"]);
-                $('#dhcp').prop('checked', arr["dhcp"] == "1" );
+                $("#mac").val(arr["mac"]);
+                $("#dhcp").prop("checked", arr["dhcp"] == "1" );
 
-                $('#ip').val(arr["ip"]);
-                checkIP( $('#ip') );
+                $("#ip").val(arr["ip"]);
+                checkIP( $("#ip") );
 
-                $('#mask').val(arr["msk"]);
-                checkIP( $('#mask') );
+                $("#mask").val(arr["msk"]);
+                checkIP( $("#mask") );
 
-                $('#gw').val(arr["gw"]);
-                checkIP( $('#gw') );
+                $("#gw").val(arr["gw"]);
+                checkIP( $("#gw") );
 
-                $('#ip, #mask, #gw').prop('disabled', $('#dhcp').is(":checked") );
+                $("#ip, #mask, #gw").prop("disabled", $("#dhcp").is(":checked") );
 
-                $('#ua').val(arr["ua"]);
+                $("#ua").val(arr["ua"]);
             }
         }
         xhr.open("POST", (!debug ? "wifi" : "http://"+karadioDebugURL+"/wifi"), false);
         xhr.setRequestHeader(content, ctype);
         xhr.send(
             "valid="  + (valid ? 1 : 0) +
-            "&ssid="  + encodeURIComponent($('#ssid').val()) +
-            "&pasw="  + encodeURIComponent($('#passwd').val()) +
-            "&ssid2=" + encodeURIComponent($('#ssid2').val()) +
-            "&pasw2=" + encodeURIComponent($('#passwd2').val()) +
-            "&ip="    + $('#ip').val() +
-            "&msk="   + $('#mask').val() +
-            "&gw="    + $('#gw').val() +
-            "&ua="    + encodeURIComponent($('#ua').val()) +
-            "&dhcp="  + $('#dhcp').is(":checked") + "&"
+            "&ssid="  + encodeURIComponent($("#ssid").val()) +
+            "&pasw="  + encodeURIComponent($("#passwd").val()) +
+            "&ssid2=" + encodeURIComponent($("#ssid2").val()) +
+            "&pasw2=" + encodeURIComponent($("#passwd2").val()) +
+            "&ip="    + $("#ip").val() +
+            "&msk="   + $("#mask").val() +
+            "&gw="    + $("#gw").val() +
+            "&ua="    + encodeURIComponent($("#ua").val()) +
+            "&dhcp="  + $("#dhcp").is(":checked") + "&"
         );
     };
 
@@ -1421,7 +1345,7 @@ function Karadio()
 
     this.clickDHCP = function()
     {
-        $('#ip, #mask, #gw').prop('disabled', $('#dhcp').is(":checked") );
+        $("#ip, #mask, #gw").prop("disabled", $("#dhcp").is(":checked") );
     }
 
 
@@ -1456,7 +1380,7 @@ function Karadio()
     var fixedEncodeURIComponent = function(str)
     {
         return str.replace(/[&]/g, function(c){
-            return '%' + c.charCodeAt(0).toString(16);
+            return "%" + c.charCodeAt(0).toString(16);
         });
     };
 
@@ -1470,20 +1394,20 @@ function Karadio()
         var pfx, a;
 
         pfx = ev.target.id;
-        pfx = pfx.slice(0, pfx.indexOf('_'));
+        pfx = pfx.slice(0, pfx.indexOf("_"));
 
-        a = document.createElement('a');
-        a.href = $('#'+pfx+'_furl').val();
+        a = document.createElement("a");
+        a.href = $("#"+pfx+"_furl").val();
 
         if( a.hostname == location.hostname )
         {
-            $('#'+pfx+'_furl').val("http://"+ $('#'+pfx+'_furl').val().replace(/^http:\/\//, ''));
-            a.href = $('#'+pfx+'_furl').val();
+            $("#"+pfx+"_furl").val("http://"+ $("#"+pfx+"_furl").val().replace(/^http:\/\//, ""));
+            a.href = $("#"+pfx+"_furl").val();
         }
 
-        $('#'+pfx+'_url' ).val(a.hostname);
-        $('#'+pfx+'_port').val(a.port=="" ? "80" : a.port);
-        $('#'+pfx+'_path').val(a.pathname + a.search + a.hash);
+        $("#"+pfx+"_url" ).val(a.hostname);
+        $("#"+pfx+"_port").val(a.port=="" ? "80" : a.port);
+        $("#"+pfx+"_path").val(a.pathname + a.search + a.hash);
     };
 
 
@@ -1516,12 +1440,12 @@ function Karadio()
         loadExtPage( $("#version_container"), versionURL );
         translator.lang(Cookies.get("language"));
 
-        var last      = $("#firmware_last").text().split('.').join('');
-        var installed = $("#firmware_installed").text().split('.').join('');
+        var last      = $("#firmware_last").text().split(".").join("");
+        var installed = $("#firmware_installed").text().split(".").join("");
 
         if( parseInt(installed) < parseInt(last) )
         {
-            $("#firmware_last").parent().addClass('label-danger').removeClass('label-success');
+            $("#firmware_last").parent().addClass("label-danger").removeClass("label-success");
 
             if( Cookies.get("show_toast_updates") === "true" && !Cookies.get("hide_toast_firmware_"+last) )
             {
@@ -1554,7 +1478,7 @@ function Karadio()
         loadExtPage( $("#about_container"), aboutURL );
         translator.lang(Cookies.get("language"));
 
-        $('button').focus(function(){
+        $("button").focus(function(){
             var btn = this;
             window.setTimeout(function(){ btn.blur(); }, 100);
         });
@@ -1610,7 +1534,7 @@ function Karadio()
         {
             $selector.selectpicker("setStyle", "btn-primary btn-success btn-info btn-warning btn-danger btn-inverse", "remove");
             $selector.selectpicker("setStyle", "btn-" + newTheme, "add");
-            $selector.selectpicker('refresh');
+            $selector.selectpicker("refresh");
         }
 
         //Apply the new theme on the web:
@@ -1642,7 +1566,7 @@ $(document).ready(function(ev)
     //
     $("#home, #stations, #settings, #about, .lang-selector").click(function(ev){
         if( $(".navbar-collapse").is(":visible") && $(".navbar-toggle").is(":visible") ){
-            $('.navbar-collapse').collapse('toggle');
+            $(".navbar-collapse").collapse("toggle");
         }
     });
 
@@ -1672,69 +1596,69 @@ $(document).ready(function(ev)
         karadio.setTheme();
     });
 
-    $('button').focus(function(){
+    $("button").focus(function(){
         var btn = this;
         window.setTimeout(function(){ btn.blur(); }, 100);
     });
 
 
-    $('.tooltips[data-toggle="tooltip"]').tooltip();
+    $(".tooltips[data-toggle='tooltip']").tooltip();
 
 
     if( Cookies.get("show_station_details") === undefined ){
         Cookies.set("show_station_details", true, { expires: 365 });
     }
-    $('#station_details').prop('checked', Cookies.get("show_station_details") === "true" );
+    $("#station_details").prop("checked", Cookies.get("show_station_details") === "true" );
 
 
     if( Cookies.get("show_toast_updates") === undefined ){
         Cookies.set("show_toast_updates", true, { expires: 365 });
     }
-    $('#show_toast_updates').prop('checked', Cookies.get("show_toast_updates") === "true");
+    $("#show_toast_updates").prop("checked", Cookies.get("show_toast_updates") === "true");
 
     $("#show_toast_updates").click(function(ev)
     {
         Cookies.set("show_toast_updates", $(this).is(":checked"), { expires: 365 });
-        Cookies.remove("hide_toast_firmware_" + $("#firmware_last").text().split('.').join('') );
+        Cookies.remove("hide_toast_firmware_" + $("#firmware_last").text().split(".").join("") );
     });
 
 
     // ADD EVENTS FOR VOLUME BARS
     //
-    var slider1 = $('#vol1_range').get(0);
+    var slider1 = $("#vol1_range").get(0);
     noUiSlider.create(slider1, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 254 }
     });
-    slider1.noUiSlider.on('change', function(){
+    slider1.noUiSlider.on("change", function(){
         karadio.onRangeVolChange(this.get(), true);
     });
 
-    var slider2 = $('#vol2_range').get(0);
+    var slider2 = $("#vol2_range").get(0);
     noUiSlider.create(slider2, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 254 }
     });
-    slider2.noUiSlider.on('change', function(){
+    slider2.noUiSlider.on("change", function(){
         karadio.onRangeVolChange(this.get(), true);
     });
 
-    var slider3 = $('#volm_range').get(0);
+    var slider3 = $("#volm_range").get(0);
     noUiSlider.create(slider3, {
         start   : [50],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 100 }
     });
-    slider3.noUiSlider.on('change', function(){
+    slider3.noUiSlider.on("change", function(){
         karadio.mVol(this.get() / this.options.range.max);
     });
 
-    var slider4 = $('#edit_ovol').get(0);
+    var slider4 = $("#edit_ovol").get(0);
     noUiSlider.create(slider4, {
         start   : [-126],
         connect : [true, false],
@@ -1742,82 +1666,82 @@ $(document).ready(function(ev)
         range   : { min: -126, max: 126 }
     });
 
-    var slider5 = $('#treble_range').get(0);
+    var slider5 = $("#treble_range").get(0);
     noUiSlider.create(slider5, {
         start   : [-8],
         connect : [true, false],
         step    : 1,
         range   : { min: -8, max: 7 }
     });
-    slider5.noUiSlider.on('change', function(){
+    slider5.noUiSlider.on("change", function(){
         karadio.onRangeChange(this, 1.5, false);
     });
 
-    var slider6 = $('#treblefreq_range').get(0);
+    var slider6 = $("#treblefreq_range").get(0);
     noUiSlider.create(slider6, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 1, max: 15 }
     });
-    slider6.noUiSlider.on('change', function(){
+    slider6.noUiSlider.on("change", function(){
         karadio.onRangeChangeFreqTreble(this, 1, false);
     });
 
-    var slider7 = $('#bass_range').get(0);
+    var slider7 = $("#bass_range").get(0);
     noUiSlider.create(slider7, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 15 }
     });
-    slider7.noUiSlider.on('change', function(){
+    slider7.noUiSlider.on("change", function(){
         karadio.onRangeChange(this, 1, false);
     });
 
-    var slider8 = $('#bassfreq_range').get(0);
+    var slider8 = $("#bassfreq_range").get(0);
     noUiSlider.create(slider8, {
         start   : [2],
         connect : [true, false],
         step    : 1,
         range   : { min: 2, max: 15 }
     });
-    slider8.noUiSlider.on('change', function(){
+    slider8.noUiSlider.on("change", function(){
         karadio.onRangeChangeFreqBass(this, 10, false);
     });
 
-    var slider9 = $('#spacial_range').get(0);
+    var slider9 = $("#spacial_range").get(0);
     noUiSlider.create(slider9, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 3 }
     });
-    slider9.noUiSlider.on('change', function(){
+    slider9.noUiSlider.on("change", function(){
         karadio.onRangeChangeSpatial(this);
     });
 
 
     // ADD EVENTS FOR COLOR THEME DROPDOWN
     //
-    var $sTheme = $('#theme_select');
+    var $sTheme = $("#theme_select");
 
-    $sTheme.find('option').each(function(){
+    $sTheme.find("option").each(function(){
         $(this).css("color", $("#theme_" + this.value).css("background-color") );
     });
 
     if( Cookies.get("theme") === undefined )
     {
         $sTheme.selectpicker("setStyle", "btn-inverse", "add");
-        $sTheme.selectpicker('val', "inverse");
+        $sTheme.selectpicker("val", "inverse");
         Cookies.set("theme", "inverse", { expires: 365 });
     }else{
-        $sTheme.selectpicker('val', Cookies.get("theme"));
+        $sTheme.selectpicker("val", Cookies.get("theme"));
         karadio.setTheme($sTheme, Cookies.get("theme"));
     }
-    $sTheme.selectpicker('refresh');
+    $sTheme.selectpicker("refresh");
 
-    $sTheme.on('shown.bs.select', function(ev){
+    $sTheme.on("shown.bs.select", function(ev){
         Cookies.set("theme", this.value, { expires: 365 });
     });
 
@@ -1830,7 +1754,7 @@ $(document).ready(function(ev)
 
     // START TRANSLATIONS
     //
-    karadio.translator = $('body').translate({ lang: Cookies.get("language"), t: translations });
+    karadio.translator = $("body").translate({ lang: Cookies.get("language"), t: translations });
 
     $(".lang-selector").click(function(ev)
     {

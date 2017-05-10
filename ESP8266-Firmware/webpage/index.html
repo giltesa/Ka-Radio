@@ -246,14 +246,14 @@
                                 <div class="form-group">
                                     <label for="sleep_time" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Sleep:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <input type="text" id="sleep_time" class="form-control" onkeyup="karadio.upSleep(event)" />
+                                        <input type="text" id="sleep_time" class="form-control" onkeyup="karadio.upTimerSW(event, 's')" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button id="btn_start_sleep" type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startSleep()" title="Start"><i class="material-icons">done</i></button>
-                                        <button id="btn_stop_sleep"  type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopSleep()" title="Stop"><i class="material-icons">clear</i></button>
+                                        <button id="btn_start_sleep" type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startTimerSW('s')" title="Start"><i class="material-icons">done</i></button>
+                                        <button id="btn_stop_sleep"  type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopTimerSW('s')" title="Stop"><i class="material-icons">clear</i></button>
                                     </div>
                                 </div>
 
@@ -262,14 +262,14 @@
                                 <div class="form-group">
                                     <label for="wake_time" class="control-label c1 col-xs-2 col-sm-2 col-lg-2 trn">Wake:</label>
                                     <div class="c2 col-xs-10 col-sm-10 col-lg-10">
-                                        <input type="text" id="wake_time" class="form-control" onkeyup="karadio.upWake(event)" />
+                                        <input type="text" id="wake_time" class="form-control" onkeyup="karadio.upTimerSW(event, 'w')" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-lg-12 text-center">
-                                        <button id="btn_start_wake" type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startWake()" title="Start"><i class="material-icons">done</i></button>
-                                        <button id="btn_stop_wake"  type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopWake()" title="Stop"><i class="material-icons">clear</i></button>
+                                        <button id="btn_start_wake" type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.startTimerSW('w')" title="Start"><i class="material-icons">done</i></button>
+                                        <button id="btn_stop_wake"  type="button" class="btn btn-raised btn-inverse theme" onClick="karadio.stopTimerSW('w')" title="Stop"><i class="material-icons">clear</i></button>
                                     </div>
                                 </div>
 
