@@ -56,3 +56,8 @@
 #FAVICON.PNG
     xxd -i favicon.png > compressed/favicon
     sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/favicon
+
+
+#REMOVE MINIFIED FILES
+	cd compressed
+	rm *.css *.js *.json
