@@ -31,15 +31,16 @@ The binaries are on ESP8266-Firmware/bin/upgrade/
 - Validate. The equipment restart to the new configuration. Connect your wifi to your AP and browse to the ip given in configuration.
 - Congratulation, you can edit your own station list. Dont forget to save your stations list in case of problem or for new equipments.
 - if the AP is already know by the esp8266, the default ip is given by dhcp.
-- a sample of stations list is on https://github.com/karawin/ESP8266-WebRadio/blob/master/ESP8266-Firmware/WebStations.txt . Can be uploaded via the web page.        
+- a sample of stations list is on https://github.com/karawin/Ka-Radio/blob/master/ESP8266-Firmware/WebStations.txt . Can be uploaded via the web page.        
 
 #### Feedback
 Please tell me if you succeded or something more can be done, thanks.<br/>
 The second step will add some hardware buttons (vol + -, station + -, play ...)<br/><br/>
 
-<img src="https://github.com/karawin/ESP8266-WebRadio/blob/master/Images/webradio1mini.jpg" alt="screenshot" border=0> 
-<img src="https://github.com/karawin/ESP8266-WebRadio/blob/master/Images/webradio2mini.jpg" alt="screenshot" border=0> 
-<img src="https://github.com/karawin/ESP8266-WebRadio/blob/master/Images/webradio3mini.jpg" alt="screenshot" border=0> 
+<img src="https://github.com/karawin/Ka-Radio/blob/master/Images/karadio-about.min.png" alt="screenshot" border=0> 
+<img src="https://github.com/karawin/Ka-Radio/blob/master/Images/karadio-home.min.png" alt="screenshot" border=0> 
+<img src="https://github.com/karawin/Ka-Radio/blob/master/Images/karadio-settings.min.png" alt="screenshot" border=0> 
+<img src="https://github.com/karawin/Ka-Radio/blob/master/Images/karadio-stations.min.png" alt="screenshot" border=0> 
 
 
 
