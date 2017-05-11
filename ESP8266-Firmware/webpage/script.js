@@ -764,9 +764,7 @@ function Karadio()
         $tr.on("drop", function(ev)
         {
             ev.preventDefault();
-            var TRStart = $("#"+ ev.originalEvent.dataTransfer.getData("Text"))[0];
-            var TRDrop  = $("#"+ ev.currentTarget.id)[0];
-            moveNodes(TRStart,TRDrop);
+            moveNodes( $("#"+ ev.originalEvent.dataTransfer.getData("Text"))[0],  $("#"+ ev.currentTarget.id)[0] );
         });
 
         $tr.on("dragover", function(ev){
@@ -1308,17 +1306,12 @@ function Karadio()
                 $("#ssid2").val(arr["ssid2"]);
                 $("#passwd2").val(arr["pasw2"]);
 
-                $("#mac").val(arr["mac"]);
+                $("#mac").text(arr["mac"]);
                 $("#dhcp").prop("checked", arr["dhcp"] == "1" );
 
                 $("#ip").val(arr["ip"]);
-                checkIP( $("#ip") );
-
                 $("#mask").val(arr["msk"]);
-                checkIP( $("#mask") );
-
                 $("#gw").val(arr["gw"]);
-                checkIP( $("#gw") );
 
                 $("#ip, #mask, #gw").prop("disabled", $("#dhcp").is(":checked") );
 
@@ -1350,20 +1343,13 @@ function Karadio()
 
 
 
-    //THE COLOR VALIDATION IS NOW CHECKED BY BOOTSTRAP, THAT CAN BE DELETED: REVISAR
-    var checkIP = function($selector)
-    {
-        //$selector[0].style.color = /^([0-9]+\.){3}[0-9]+$/.test($selector.val()) ? "#009688" : "#f44336";
-    };
-
-
-
     this.upgradeFirmware = function()
     {
         if( webSocket.readyState == webSocket.OPEN )
         {
             var $toast = showToast("Updating the firmware, please wait...", 0);
 
+            basket.clear(); //Delete old JS files to force the download of new ones.
             webSocket.send("upgrade");
 
             window.setTimeout(function(){
@@ -1540,6 +1526,9 @@ function Karadio()
         //Apply the new theme on the web:
         $("button.theme").removeClass("btn-primary btn-success btn-info btn-warning btn-danger btn-inverse").addClass("btn-" + newTheme);
         $("nav.theme").removeClass("navbar-primary navbar-success navbar-info navbar-warning navbar-danger navbar-inverse").addClass("navbar-" + newTheme);
+        $(".togglebutton.theme").removeClass("tb-primary tb-success tb-info tb-warning tb-danger tb-inverse").addClass("tb-" + newTheme);
+        $(".slider.theme").removeClass("sl-primary sl-success sl-info sl-warning sl-danger sl-inverse").addClass("sl-" + newTheme);
+        $(".checkbox.theme").removeClass("cb-primary cb-success cb-info cb-warning cb-danger cb-inverse").addClass("cb-" + newTheme);
 
         $(".material-icons.theme").css("color", $("#theme_" + newTheme).css("background-color") );
         $("a.theme").css("color", $("#theme_" + newTheme).css("background-color") );

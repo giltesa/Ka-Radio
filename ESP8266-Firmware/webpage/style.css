@@ -288,3 +288,51 @@ p#url1{
 	.form-group.col2x div { width: 45%; }
     #yours_dialog .modal-dialog { width: 1170px; }
 }
+
+
+/* CSS CODE TO ADD SUPPORT FOR THEMES TO ELEMENTS. CHECKBOX, TOGGLEBUTTON, AND SLIDER */
+.slider.sl-primary .noUi-connect, .slider.sl-primary.slider-default .noUi-connect {background-color: #009688;}
+.slider.sl-primary .noUi-handle, .slider.sl-primary.slider-default .noUi-handle {border-color: #009688;background-color: #009688;}
+.slider.sl-success .noUi-connect, .slider.sl-success.slider-default .noUi-connect {background-color: #4caf50;}
+.slider.sl-success .noUi-handle, .slider.sl-success.slider-default .noUi-handle {border-color: #4caf50;background-color: #4caf50;}
+.slider.sl-info .noUi-connect, .slider.sl-info.slider-default .noUi-connect {background-color: #03a9f4;}
+.slider.sl-info .noUi-handle, .slider.sl-info.slider-default .noUi-handle {border-color: #03a9f4;background-color: #03a9f4;}
+.slider.sl-warning .noUi-connect, .slider.sl-warning.slider-default .noUi-connect {background-color: #ff5722;}
+.slider.sl-warning .noUi-handle, .slider.sl-warning.slider-default .noUi-handle {border-color: #ff5722;background-color: #ff5722;}
+.slider.sl-danger .noUi-connect, .slider.sl-danger.slider-default .noUi-connect {background-color: #f44336;}
+.slider.sl-danger .noUi-handle, .slider.sl-danger.slider-default .noUi-handle {border-color: #f44336;background-color: #f44336;}
+.slider.sl-inverse .noUi-connect, .slider.sl-inverse.slider-default .noUi-connect {background-color: #3f51b5;}
+.slider.sl-inverse .noUi-handle, .slider.sl-inverse.slider-default .noUi-handle {border-color: #3f51b5;background-color: #3f51b5;}
+
+.togglebutton.tb-primary label input[type=checkbox]:checked+.toggle {background-color: rgba(0,150,136,.5);}
+.togglebutton.tb-primary label input[type=checkbox]:checked+.toggle:after {background-color: #009688;}
+.togglebutton.tb-primary label input[type=checkbox]:checked+.toggle:active:after {-webkit-box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(0,150,136,.1);box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(0,150,136,.1);}
+.togglebutton.tb-success label input[type=checkbox]:checked+.toggle {background-color: rgba(76,175,80,.5);}
+.togglebutton.tb-success label input[type=checkbox]:checked+.toggle:after {background-color: #4caf50;}
+.togglebutton.tb-success label input[type=checkbox]:checked+.toggle:active:after {-webkit-box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(76,175,80,.1);box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(76,175,80,.1);}
+.togglebutton.tb-info label input[type=checkbox]:checked+.toggle {background-color: rgba(3,169,244,.5);}
+.togglebutton.tb-info label input[type=checkbox]:checked+.toggle:after {background-color: #03a9f4;}
+.togglebutton.tb-info label input[type=checkbox]:checked+.toggle:active:after {-webkit-box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(3,169,244,.1);box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(3,169,244,.1);}
+.togglebutton.tb-warning label input[type=checkbox]:checked+.toggle {background-color: rgba(255,87,34,.5);}
+.togglebutton.tb-warning label input[type=checkbox]:checked+.toggle:after {background-color: #ff5722;}
+.togglebutton.tb-warning label input[type=checkbox]:checked+.toggle:active:after {-webkit-box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(255,87,34,.1);box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(255,87,34,.1);}
+.togglebutton.tb-danger label input[type=checkbox]:checked+.toggle {background-color: rgba(244,67,54,.5);}
+.togglebutton.tb-danger label input[type=checkbox]:checked+.toggle:after {background-color: #f44336;}
+.togglebutton.tb-danger label input[type=checkbox]:checked+.toggle:active:after {-webkit-box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(244,67,54,.1);box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(244,67,54,.1);}
+.togglebutton.tb-inverse label input[type=checkbox]:checked+.toggle {background-color: rgba(63,81,181,.5);}
+.togglebutton.tb-inverse label input[type=checkbox]:checked+.toggle:after {background-color: #3f51b5;}
+.togglebutton.tb-inverse label input[type=checkbox]:checked+.toggle:active:after {-webkit-box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(63,81,181,.1);box-shadow: 0 1px 3px 1px rgba(0,0,0,.4), 0 0 0 15px rgba(63,81,181,.1);}
+
+.checkbox.cb-primary input[type=checkbox]:checked+.checkbox-material .check {color: #009688;border-color: #009688;}
+.checkbox.cb-primary input[type=checkbox]:checked+.checkbox-material .check:before {color: #009688;}
+.checkbox.cb-success input[type=checkbox]:checked+.checkbox-material .check {color: #4caf50;border-color: #4caf50;}
+.checkbox.cb-success input[type=checkbox]:checked+.checkbox-material .check:before {color: #4caf50;}
+.checkbox.cb-info input[type=checkbox]:checked+.checkbox-material .check {color: #03a9f4;border-color: #03a9f4;}
+.checkbox.cb-info input[type=checkbox]:checked+.checkbox-material .check:before {color: #03a9f4;}
+.checkbox.cb-warning input[type=checkbox]:checked+.checkbox-material .check {color: #ff5722;border-color: #ff5722;}
+.checkbox.cb-warning input[type=checkbox]:checked+.checkbox-material .check:before {color: #ff5722;}
+.checkbox.cb-danger input[type=checkbox]:checked+.checkbox-material .check {color: #f44336;border-color: #f44336;}
+.checkbox.cb-danger input[type=checkbox]:checked+.checkbox-material .check:before {color: #f44336;}
+.checkbox.cb-inverse input[type=checkbox]:checked+.checkbox-material .check {color: #3f51b5;border-color: #3f51b5;}
+.checkbox.cb-inverse input[type=checkbox]:checked+.checkbox-material .check:before {color: #3f51b5;}
+/* /CSS CODE TO ADD SUPPORT FOR THEMES TO ELEMENTS. CHECKBOX, TOGGLEBUTTON, AND SLIDER */
