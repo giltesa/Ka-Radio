@@ -1,8 +1,8 @@
 var translations = {
-    "Home": {           //Text in English, has to match the HTML. (If the texts are very long could overflow the mobile interface, try to have a length similar to the English/Spanish translation.)
-        fr: "",         //French translation.
-        es: "Inicio",   //Spanish translation.
-        ru: "Главная"   //Russian translations.
+    "Home": {               //Text in English, has to match the HTML. (If the texts are very long could overflow the mobile interface, try to have a length similar to the English/Spanish translation.)
+        fr: "Principal",    //French translation.
+        es: "Inicio",       //Spanish translation.
+        ru: "Главная"       //Russian translations.
     },
     "Stations": {
         fr: "Stations",

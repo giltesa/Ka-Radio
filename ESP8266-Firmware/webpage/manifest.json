@@ -5,11 +5,7 @@
     "name"             : "Karadio Web App",
     "description"      : "Karadio, the ultimate Wifi Webradio",
     "icons": [{
-            "src"      : "bootstrap/favicon-144.png",
-            "sizes"    : "144x144",
-            "type"     : "image/png"
-        },{
-            "src"      : "bootstrap/favicon-168.png",
+            "src"      : "favicon.png",
             "sizes"    : "168x168",
             "type"     : "image/png"
         }],

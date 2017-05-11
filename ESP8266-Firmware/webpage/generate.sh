@@ -1,53 +1,58 @@
 #!/bin/bash
-yui-compressor   -o style.min.css style.css 
-mv style.css style.ori
-mv style.min.css style.css
-xxd -i style.css > style
-sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' style
-mv style.ori style.css
-
-yui-compressor   -o style1.min.css style1.css 
-mv style1.css style1.ori
-mv style1.min.css style1.css
-xxd -i style1.css > style1
-sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' style1
-mv style1.ori style1.css
-
-# old compressor
-#python3 ./css-html-js-minify.py --checkupdates style.css
-#mv style.css style.ori
-#mv style.min.css style.css
-#xxd -i style.css > style
-#sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' style
-#mv style.ori style.css
+#INDEX.HTML
+    mv index.html index.htm
+    python3 ./css-html-js-minify.py index.htm
+    xxd -i index.html > compressed/index
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/index
+    mv index.htm index.html
 
 
-yui-compressor   -o script.min.js script.js 
-mv script.js script.ori
-mv script.min.js script.js
-xxd -i script.js > script
-sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' script
-mv script.ori script.js
+#STYLE.CSS
+    yui-compressor -o compressed/style.min.css style.css
+    xxd -i compressed/style.min.css > compressed/style
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/style
+
+#BOOTSTRAP-MATERIAL-DESIGN.MIN.CSS
+    xxd -i bootstrap-material-design.min.css > compressed/materialcss
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/materialcss
+
+#RIPPLES.MIN.CSS
+    xxd -i ripples.min.css > compressed/ripplescss
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/ripplescss
 
 
-# old compressor
-#python3 ./css-html-js-minify.py script.js
-#mv script.js script.ori
-#mv script.min.js script.js
-#xxd -i script.js > script
-#sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' script
-#mv script.ori script.js
+#SCRIPT.JS
+    yui-compressor -o compressed/script.min.js script.js
+    xxd -i compressed/script.min.js > compressed/script
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/script
 
-mv index.html index.htm
-python3 ./css-html-js-minify.py index.htm
-xxd -i index.html > index
-sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' index
-#rm index.html
-#mv index.html index.min.html
-mv index.htm index.html
+#MATERIAL.MIN.JS
+    xxd -i material.min.js > compressed/materialjs
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/materialjs
 
-xxd -i logo.png > logo
-sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' logo
+#RIPPLES.MIN.JS
+    xxd -i ripples.min.js > compressed/ripplesjs
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/ripplesjs
 
-xxd -i favicon.png > favicon
-sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' favicon
+#JQUERY.TRANSLATE.JS
+    yui-compressor -o compressed/jquery.translate.min.js jquery.translate.js
+    xxd -i compressed/jquery.translate.min.js > compressed/translate
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/translate
+
+#TRANSLATIONS.JS
+    yui-compressor -o compressed/translations.min.js translations.js
+    xxd -i compressed/jquery.translate.min.js > compressed/translations
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/translations
+
+
+#MANIFEST.JSON
+    mv manifest.json manifest.css
+    yui-compressor -o compressed/manifest.min.json manifest.css
+    xxd -i compressed/manifest.min.json > compressed/manifest
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/manifest
+    mv manifest.css manifest.json
+
+
+#FAVICON.PNG
+    xxd -i favicon.png > compressed/favicon
+    sed -i 's/\[\]/\[\] ICACHE_STORE_ATTR ICACHE_RODATA_ATTR /g' compressed/favicon
