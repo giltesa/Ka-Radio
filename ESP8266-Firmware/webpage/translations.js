@@ -1,3 +1,6 @@
+// https://github.com/tinoni/translate.js
+(function (a) { a.fn.translate = function (b) { var e = this; var d = { css: "trn", lang: "en" }; d = a.extend(d, b || {}); if (d.css.lastIndexOf(".", 0) !== 0) { d.css = "." + d.css } var c = d.t; this.lang = function (f) { if (f) { d.lang = f; this.translate(d) } return d.lang }; this.get = function (f) { var g = f; try { g = c[f][d.lang] } catch (h) { return f } if (g) { return g } else { return f } }; this.g = this.get; this.find(d.css).each(function (g) { var h = a(this); var f = h.attr("data-trn-key"); if (!f) { f = h.html(); h.attr("data-trn-key", f) } h.html(e.get(f)) }); return this } })(jQuery);
+
 var translations = {
     "Home": {               //Text in English, has to match the HTML. (If the texts are very long could overflow the mobile interface, try to have a length similar to the English/Spanish translation.)
         fr: "Principal",    //French translation.

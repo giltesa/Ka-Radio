@@ -4,12 +4,12 @@
 */
 #include "interface.h"
 #include "user_interface.h"
-#include "osapi.h"
+//#include "osapi.h"
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
 #include "eeprom.h"
-
+#include "ntp.h"
 
 uint16_t currentStation = 0;
 
@@ -20,6 +20,8 @@ extern void setVolume(char* vol);
 extern void setRelVolume(int8_t vol);
 extern uint16_t getVolume(void);
 extern uint8_t playing;
+
+ICACHE_FLASH_ATTR void clientVol(char *s);
 
 #define MAX_WIFI_STATIONS 50
 char errmsg[]={"##CMD_ERROR#\n"};
@@ -136,13 +138,13 @@ ICACHE_FLASH_ATTR void wifiConnect(char* cmd)
 	char *t = strstr(cmd, "(\"");
 	if(t == 0)
 	{
-		printf("\n##WIFI.CMD_ERROR#");
+		printf(errmsg);
 		return;
 	}
 	char *t_end  = strstr(t, "\",\"");
 	if(t_end == 0)
 	{
-		printf("\n##WIFI.CMD_ERROR#");
+		printf(errmsg);
 		return;
 	}
 	
@@ -175,13 +177,13 @@ ICACHE_FLASH_ATTR void wifiConnect(char* cmd)
 	char *t = strstr(cmd, "(\"");
 	if(t == 0)
 	{
-		printf("\n##WIFI.CMD_ERROR#");
+		printf(errmsg);
 		return;
 	}
 	char *t_end  = strstr(t, "\",\"");
 	if(t_end == 0)
 	{
-		printf("\n##WIFI.CMD_ERROR#");
+		printf(errmsg);
 		return;
 	}
 	
@@ -191,7 +193,7 @@ ICACHE_FLASH_ATTR void wifiConnect(char* cmd)
 	t_end = strstr(t, "\")");
 	if(t_end == 0)
 	{
-		printf("\n##WIFI.CMD_ERROR#");
+		printf(errmsg);
 		return;
 	}
 	
@@ -377,10 +379,11 @@ ICACHE_FLASH_ATTR void clientPlay(char *s)
 ICACHE_FLASH_ATTR void clientList(char *s)
 {
 	struct shoutcast_info* si;
-	int i = 0,j = 255;
-	printf("\n#CLI.LIST#\n");
+	uint8_t i = 0,j = 255;
+	bool onlyOne = false;
+	char stlinf[] = {"##CLI.LIST#\n"};
 	char *t = strstr(s, "(\"");
-	if(t != NULL)
+	if(t != NULL) // a number specified
 	{	
 		char *t_end  = strstr(t, "\")")-2;
 		if(t_end <= 0)
@@ -389,24 +392,50 @@ ICACHE_FLASH_ATTR void clientList(char *s)
 			return;
 		}	
 		i = atoi(t+2);
+		if (i>254) i = 0;
 		j = i+1;
-	}
-	
-	for (i ;i <j;i++)
-	{
-		si = getStation(i);
-		if (si !=NULL)
+		onlyOne = true;
+		
+	} 
+	{	
+		printf("\n#CLI.LIST#\n");	
+		for (i ;i <j;i++)
 		{
-			if(si->port !=0)
-			{	
-				printf("%3d: %s, %s:%d%s\n",i,si->name,si->domain,si->port,si->file);	
-				vTaskDelay(1);
+			si = getStation(i);
+			if ((si == NULL) || (si->port ==0))
+			{
+				printf("#CLI.LISTINFO#: %3d: not defined, Try\n",i);
+				printf(stlinf);
+//				printf("##CLI.NAMESET#: %3d\n",i);
+				if (si != NULL) free(si);
+				return;
 			}
-			free(si);
+
+			if (si !=NULL)
+			{
+				if(si->port !=0)
+				{	
+					printf("#CLI.LISTINFO#: %3d: %s, %s:%d%s\n",i,si->name,si->domain,si->port,si->file);	
+					vTaskDelay(1);
+				}
+				free(si);
+			}	
 		}	
-	}	
-	printf("##CLI.LIST#\n");
+		printf(stlinf);
+	}
 }
+ICACHE_FLASH_ATTR void clientInfo()
+{
+	struct shoutcast_info* si;
+	si = getStation(currentStation);
+	ntp_print_time();
+	clientSetName(si->name,currentStation);
+	clientPrintHeaders();
+	clientVol("");
+	clientPrintState();
+	free(si);
+}
+
 ICACHE_FLASH_ATTR void clientI2S(char* s)
 {
     char *t = strstr(s, "(\"");
@@ -470,7 +499,6 @@ ICACHE_FLASH_ATTR void clientVol(char *s)
     char *t = strstr(s, "(\"");
 	if(t == 0)
 	{
-//		printf("\n##CLI.CMD_ERROR#");
 		// no argument, return the current volume
 		printf("##CLI.VOL#: %d\n",getVolume());
 		return;
@@ -479,7 +507,7 @@ ICACHE_FLASH_ATTR void clientVol(char *s)
     if(t_end <= 0)
     {
 
-		printf("\n##CLI.CMD_ERROR#");
+		printf(errmsg);
 		return;
     }
    char *vol = (char*) malloc((t_end-t+1)*sizeof(char));
@@ -531,7 +559,7 @@ ICACHE_FLASH_ATTR void sysled(char* s)
 	extern bool ledStatus;
 	if(t == NULL)
 	{
-		printf("\n##Led is in %s#\n",((device->options & T_LED)== 0)?"Blink mode":"Play mode");
+		printf("##Led is in %s#\n",((device->options & T_LED)== 0)?"Blink mode":"Play mode");
 		free(device);
 		return;
 	}
@@ -548,9 +576,33 @@ ICACHE_FLASH_ATTR void sysled(char* s)
 	{device->options &= NT_LED; ledStatus =true;} // options:0 = ledStatus true = Blink mode
 	
 	saveDeviceSettings(device);	
-	printf("\n##LED is in %s#\n",((device->options & T_LED)== 0)?"Blink mode":"Play mode");
+	printf("##LED is in %s#\n",((device->options & T_LED)== 0)?"Blink mode":"Play mode");
 	free(device);
 	
+}
+
+ICACHE_FLASH_ATTR void tzoffset(char* s)
+{
+	char *t = strstr(s, "(\"");
+	struct device_settings *device;
+	device = getDeviceSettings();
+	if(t == NULL)
+	{
+		printf("##SYS.TZO#: %d\n",device->tzoffset);
+		free(device);
+		return;
+	}
+	char *t_end  = strstr(t, "\")");
+    if(t_end == NULL)
+    {
+		printf(errmsg);
+		return;
+    }	
+	uint8_t value = atoi(t+2);
+	device->tzoffset = value;	
+	saveDeviceSettings(device);	
+	printf("##SYS.TZO#: %d\n",device->tzoffset);
+	free(device);		
 }
 
 ICACHE_FLASH_ATTR void heapSize()
@@ -565,33 +617,37 @@ ICACHE_FLASH_ATTR void checkCommand(int size, char* s)
 	for(i=0;i<size;i++) tmp[i] = s[i];
 	tmp[size] = 0;
 //	printf("size: %d, cmd=%s\n",size,tmp);
-	if(strcmp(tmp, "wifi.list") == 0) wifiScan();
-	else if(strcmp(tmp, "wifi.con") == 0) wifiConnectMem();
-	else if(startsWith("wifi.con", tmp)) wifiConnect(tmp);
+	if     (strcmp(tmp, "wifi.list") == 0) 	wifiScan();
+	else if(strcmp(tmp, "wifi.con") == 0) 	wifiConnectMem();
+	else if(startsWith ("wifi.con", tmp)) 	wifiConnect(tmp);
 	else if(strcmp(tmp, "wifi.discon") == 0) wifiDisconnect();
 	else if(strcmp(tmp, "wifi.status") == 0) wifiStatus();
 	else if(strcmp(tmp, "wifi.station") == 0) wifiGetStation();
-    else if(startsWith("cli.url", tmp)) clientParseUrl(tmp);
-    else if(startsWith("cli.path", tmp)) clientParsePath(tmp);
-    else if(startsWith("cli.port", tmp)) clientParsePort(tmp);
+    else if(startsWith ("cli.url", tmp)) 	clientParseUrl(tmp);
+    else if(startsWith ("cli.path", tmp))	clientParsePath(tmp);
+    else if(startsWith ("cli.port", tmp)) 	clientParsePort(tmp);
 	else if(strcmp(tmp, "cli.instant") == 0) {clientDisconnect("cli instantplay");clientConnectOnce();}
-	else if(strcmp(tmp, "cli.start") == 0) clientPlay("(\"255\")"); // outside value to play the current station
-    else if(strcmp(tmp, "cli.stop") == 0) clientDisconnect("cli stop");
-    else if(startsWith("cli.list", tmp)) clientList(tmp);
-    else if(strcmp(tmp, "cli.next") == 0) wsStationNext();
-    else if(strncmp(tmp, "cli.previous",8) == 0) wsStationPrev();
-    else if(startsWith("cli.play",tmp)) clientPlay(tmp);
-	else if(strcmp(tmp, "cli.vol+") == 0) setVolumePlus();
-	else if(strcmp(tmp, "cli.vol-") == 0) setVolumeMinus();
-	else if(startsWith("cli.vol",tmp)) clientVol(tmp);
-    else if(startsWith("sys.i2s",tmp)) clientI2S(tmp);
-    else if(startsWith("sys.uart",tmp)) clientUart(tmp);
-    else if(strcmp(tmp, "sys.erase") == 0) eeEraseAll();
-    else if(strcmp(tmp, "sys.heap") == 0) heapSize();
-    else if(strcmp(tmp, "sys.boot") == 0) system_restart();
-    else if(strcmp(tmp,"sys.update") == 0) update_firmware();
-	else if(startsWith("sys.patch",tmp)) syspatch(tmp);
-	else if(startsWith("sys.led",tmp)) sysled(tmp);
+	else if(strcmp(tmp, "cli.start") == 0) 	clientPlay("(\"255\")"); // outside value to play the current station
+    else if(strcmp(tmp, "cli.stop") == 0) 	clientDisconnect("cli stop");
+    else if(startsWith ("cli.list", tmp)) 	clientList(tmp);
+    else if(strcmp(tmp, "cli.next") == 0) 	wsStationNext();
+    else if(strncmp(tmp,"cli.previous",8) == 0) wsStationPrev();
+    else if(startsWith ("cli.play",tmp)) 	clientPlay(tmp);
+	else if(strcmp(tmp, "cli.vol+") == 0) 	setVolumePlus();
+	else if(strcmp(tmp, "cli.vol-") == 0) 	setVolumeMinus();
+	else if(strcmp(tmp, "cli.info") == 0) 	clientInfo();
+	else if(startsWith ("cli.vol",tmp)) 	clientVol(tmp);
+    else if(startsWith ("sys.i2s",tmp)) 	clientI2S(tmp);
+    else if(startsWith ("sys.uart",tmp)) 	clientUart(tmp);
+    else if(strcmp(tmp, "sys.erase") == 0) 	eeEraseAll();
+    else if(strcmp(tmp, "sys.heap") == 0) 	heapSize();
+    else if(strcmp(tmp, "sys.boot") == 0) 	system_restart();
+    else if(strcmp(tmp, "sys.update") == 0) update_firmware();
+	else if(startsWith ("sys.patch",tmp)) 	syspatch(tmp);
+	else if(startsWith ("sys.led",tmp)) 	sysled(tmp);
+    else if(strcmp(tmp, "sys.date") == 0) 	ntp_print_time();
+	else if(startsWith( "sys.tzo",tmp)) 	tzoffset(tmp);
+	else if(startsWith( "sys.log",tmp)) 	; // do nothing
 	else printInfo(tmp);
 	free(tmp);
 	
