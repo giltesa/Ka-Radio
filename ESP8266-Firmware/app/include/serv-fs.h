@@ -16,12 +16,12 @@ struct servFile
 #define ICACHE_STORE_ATTR __attribute__((aligned(4)))
 #define ICACHE_RAM_ATTR __attribute__((section(".iram0.text")))
 
-#include "../../webpage/index"
-#include "../../webpage/style"
-#include "../../webpage/style1"
-#include "../../webpage/script"
-#include "../../webpage/logo"
-#include "../../webpage/favicon"
+#include "../../webpage/compressed/index"
+#include "../../webpage/compressed/style"
+#include "../../webpage/compressed/script"
+#include "../../webpage/compressed/translations"
+#include "../../webpage/compressed/manifest"
+#include "../../webpage/compressed/favicon"
 
 const struct servFile faviconFile = {
 	"/favicon.png",
@@ -30,41 +30,43 @@ const struct servFile faviconFile = {
 	favicon_png,
 	(struct servFile*)NULL
 };
-const struct servFile logoFile = {
-	"/logo.png",
-	"image/png",
-	sizeof(logo_png),
-	logo_png,
+
+const struct servFile manifestFile = {
+	"/manifest.json",
+	"text/javascript",
+	sizeof(manifest_min_json),
+	manifest_min_json,
 	(struct servFile*)&faviconFile
+};
+
+const struct servFile translationsFile = {
+	"/translations.js",
+	"text/javascript",
+	sizeof(translations_min_js),
+	translations_min_js,
+	(struct servFile*)&manifestFile
 };
 
 const struct servFile scriptFile = {
 	"/script.js",
 	"text/javascript",
-	sizeof(script_js),
-	script_js,
-	(struct servFile*)&logoFile
+	sizeof(script_min_js),
+	script_min_js,
+	(struct servFile*)&translationsFile
 };
 
 const struct servFile styleFile = {
 	"/style.css",
 	"text/css",
-	sizeof(style_css),
-	style_css,
+	sizeof(style_min_css),
+	style_min_css,
 	(struct servFile*)&scriptFile
 };
 
-const struct servFile styleFile1 = {
-	"/style1.css",
-	"text/css",
-	sizeof(style1_css),
-	style1_css,
-	(struct servFile*)&styleFile
-};
 const struct servFile indexFile = {
 	"/",
 	"text/html",
 	sizeof(index_html),
 	index_html,
-	(struct servFile*)&styleFile1
+	(struct servFile*)&styleFile
 };
