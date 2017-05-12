@@ -1,7 +1,7 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 
-$url   = "http://test.giltesa.com/karadio/php/yours/";    // http://karadio.karawin.fr/yours/
+$url   = "http://karadio.karawin.fr/yours/";
 
 $yours = array(
     "01" => array(

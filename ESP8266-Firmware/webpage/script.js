@@ -20,15 +20,15 @@ function Karadio()
 {
     //PRIVATE PROPERTIES:
     const
-        debug           = true,
+        debug           = false,
         content         = "Content-type",
         ctype           = "application/x-www-form-urlencoded",
         cjson           = "application/json",
         maxStation      = 255,
 
-        versionURL      = "http://test.giltesa.com/karadio/php/version.php",        // http://KaraDio.karawin.fr/version.php
-        aboutURL        = "http://test.giltesa.com/karadio/php/about.php",          // http://KaraDio.karawin.fr/history.php
-        yoursURL        = "http://test.giltesa.com/karadio/php/yours/index.php",    // http://karadio.karawin.fr/yours/index.php
+        versionURL      = "http://KaraDio.karawin.fr/version.php",
+        aboutURL        = "http://karadio.karawin.fr/about.php",
+        yoursURL        = "http://karadio.karawin.fr/yours/index.php",
 
         karadioURL      = window.location.host,
         karadioDebugURL = "192.168.1.8";
@@ -180,11 +180,7 @@ function Karadio()
             $("#lurl, #icon").removeClass("hidden");
 
             url = arr["url1"].replace(/\\| /g, "");
-
-            if( url == "http://www.icecast.org/" )
-                $("#icon").prop("src","/logo.png"); //KARAWIN: What is the purpose of this, the code is necessary, the logo.png is necessary?
-            else
-                $("#icon").prop("src","http://www.google.com/s2/favicons?domain_url=" + url);
+            $("#icon").prop("src","http://www.google.com/s2/favicons?domain_url=" + url);
         }
 
         url = arr["url1"].replace(/\\/g, "");
@@ -1614,99 +1610,100 @@ $(document).ready(function(ev)
 
     // ADD EVENTS FOR VOLUME BARS
     //
-    var slider1 = $("#vol1_range").get(0);
-    noUiSlider.create(slider1, {
+    var slider;
+    slider = $("#vol1_range").get(0);
+    noUiSlider.create(slider, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 254 }
     });
-    slider1.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.onRangeVolChange(this.get(), true);
     });
 
-    var slider2 = $("#vol2_range").get(0);
-    noUiSlider.create(slider2, {
+    slider = $("#vol2_range").get(0);
+    noUiSlider.create(slider, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 254 }
     });
-    slider2.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.onRangeVolChange(this.get(), true);
     });
 
-    var slider3 = $("#volm_range").get(0);
-    noUiSlider.create(slider3, {
+    slider = $("#volm_range").get(0);
+    noUiSlider.create(slider, {
         start   : [50],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 100 }
     });
-    slider3.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.mVol(this.get() / this.options.range.max);
     });
 
-    var slider4 = $("#edit_ovol").get(0);
-    noUiSlider.create(slider4, {
+    slider = $("#edit_ovol").get(0);
+    noUiSlider.create(slider, {
         start   : [-126],
         connect : [true, false],
         step    : 2,
         range   : { min: -126, max: 126 }
     });
 
-    var slider5 = $("#treble_range").get(0);
-    noUiSlider.create(slider5, {
+    slider = $("#treble_range").get(0);
+    noUiSlider.create(slider, {
         start   : [-8],
         connect : [true, false],
         step    : 1,
         range   : { min: -8, max: 7 }
     });
-    slider5.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.onRangeChange(this, 1.5, false);
     });
 
-    var slider6 = $("#treblefreq_range").get(0);
-    noUiSlider.create(slider6, {
+    slider = $("#treblefreq_range").get(0);
+    noUiSlider.create(slider, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 1, max: 15 }
     });
-    slider6.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.onRangeChangeFreqTreble(this, 1, false);
     });
 
-    var slider7 = $("#bass_range").get(0);
-    noUiSlider.create(slider7, {
+    slider = $("#bass_range").get(0);
+    noUiSlider.create(slider, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 15 }
     });
-    slider7.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.onRangeChange(this, 1, false);
     });
 
-    var slider8 = $("#bassfreq_range").get(0);
-    noUiSlider.create(slider8, {
+    slider = $("#bassfreq_range").get(0);
+    noUiSlider.create(slider, {
         start   : [2],
         connect : [true, false],
         step    : 1,
         range   : { min: 2, max: 15 }
     });
-    slider8.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.onRangeChangeFreqBass(this, 10, false);
     });
 
-    var slider9 = $("#spacial_range").get(0);
-    noUiSlider.create(slider9, {
+    slider = $("#spacial_range").get(0);
+    noUiSlider.create(slider, {
         start   : [0],
         connect : [true, false],
         step    : 1,
         range   : { min: 0, max: 3 }
     });
-    slider9.noUiSlider.on("change", function(){
+    slider.noUiSlider.on("change", function(){
         karadio.onRangeChangeSpatial(this);
     });
 
