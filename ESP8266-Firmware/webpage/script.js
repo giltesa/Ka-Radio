@@ -57,7 +57,7 @@ function Karadio()
         wifi(false);
         autoStart();
         refresh();
-        stationDetails();
+        infoStation();
     };
 
 
@@ -144,7 +144,7 @@ function Karadio()
 
     var icyResp = function(arr)
     {
-        var url, isFull = $("#station_details").is(":checked");
+        var url, isFull = $("#info_station").is(":checked");
 
         if( typeof arr["auto"] != "undefined" ){ // undefined for webSocket
             $("#aplay").prop("checked", arr["auto"] == "1" );
@@ -388,9 +388,9 @@ function Karadio()
 
 
 
-    this.stationDetails = function()
+    this.infoStation = function()
     {
-        var isFull = $("#station_details").is(":checked");
+        var isFull = $("#info_station").is(":checked");
 
         Cookies.set("show_station_details", isFull, { expires: 365 });
 
@@ -1164,7 +1164,7 @@ function Karadio()
         var fileName, output="", textFileAsBlob, downloadLink;
 
 
-        fileName = $("#backup-name").val();
+        fileName = $("#backup_name").val();
 
         if( fileName == "" )
             fileName = "WebStations.txt";
@@ -1259,7 +1259,7 @@ function Karadio()
                 loadStationSelect();
             };
 
-            file = $("#restore-file")[0].files[0];
+            file = $("#restore_file")[0].files[0];
 
             if( file == null )
                 showToast("Please select a file");
@@ -1593,7 +1593,7 @@ $(document).ready(function(ev)
     if( Cookies.get("show_station_details") === undefined ){
         Cookies.set("show_station_details", true, { expires: 365 });
     }
-    $("#station_details").prop("checked", Cookies.get("show_station_details") === "true" );
+    $("#info_station").prop("checked", Cookies.get("show_station_details") === "true" );
 
 
     if( Cookies.get("show_toast_updates") === undefined ){
