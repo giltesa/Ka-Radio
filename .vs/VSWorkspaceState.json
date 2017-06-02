@@ -2,10 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\ESP8266-Firmware",
-    "\\ESP8266-Firmware\\app\\include",
-    "\\ESP8266-Firmware\\webpage",
-    "\\ESP8266-Firmware\\webpage\\php\\yours"
+    "\\ESP8266-Firmware\\webpage"
   ],
-  "SelectedNode": "\\ESP8266-Firmware\\webpage\\script.js",
+  "SelectedNode": "\\ESP8266-Firmware\\webpage\\index.html",
   "PreviewInSolutionExplorer": false
 }
