@@ -4,13 +4,15 @@
 <html>
 <body>
 
-    <p><span class="label label-success">Release <span id="firmware_last">1.2.1</span> - Built on 2017/04/16</span></p>
+    <p><span class="label label-success">Release <span id="firmware_last">1.3.1</span> - Built on 2017/06/06</span></p>
 
     <p>New features:</p>
     <ul>
-		<li>New uart command: <code>sys.date</code> Send a ntp request and Display the current locale time.</li>
-		<li>New uart command: <code>sys.tzo</code> Display or change the timezone offset. See Interface.txt</li>
-		<li>New No needs to parse the url of stations on the web interface. Now it can be done automatically.</li>
+        <!--<li>Edit station now in modal window</li>-->
+        <!--<li>Added a mouse event on full url</li>-->
+        <li>Many internal optimizations</li>
+        <li>New control buttons on the web interface</li>
+        <li>A potential huge bug removed</li>
     </ul>
 
     <div class="alert alert-danger">

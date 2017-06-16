@@ -320,6 +320,20 @@
 
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-lg-12">
+                    <p class="text-default"><strong>Release 1.2.2</strong></p>
+                    <ul>
+                        <li>Volume correction for the control panel.</li>
+                        <li>The volume is now saved every second if needed (less stress for the flash).</li>
+                        <li>Stability</li>
+                        <li>New uart command: <code>sys.date</code> Send a ntp request and Display the current locale time.</li>
+                        <li>New uart command: <code>sys.tzo</code> Display or change the timezone offset. See Interface.txt</li>
+                        <li>New No needs to parse the url of stations on the web interface. Now it can be done automatically.</li>
+                    </ul>
+                </div>
+            </div>        
+        
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-12 col-lg-12">
                     <p class="text-default"><strong>Release 1.1.8</strong></p>
                     <ul>
 						<li>New uart command: <code>cli.info</code> Display nameSet, all icy and volume. Used to synchronise the lcd extention.</li>
